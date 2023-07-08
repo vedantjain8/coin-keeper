@@ -18,6 +18,9 @@ samples, guidance on mobile development, and a full API reference.
 ## Dependencies
 flutter pub add sqflite
 
+## Urgent TODO:
+- [ ] home.dart me keyboard show nahi ho raha hai, therefor resulting in return of 0 in media query bottom insets
+
 ## TODO
 - [ ] add validation for invalid wallet data entry
 - [ ] show distinct category for new expense or income in showform with menu item

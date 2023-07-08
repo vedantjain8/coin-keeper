@@ -1,4 +1,4 @@
-import 'package:coinkeeper/screens/home.dart';
+import 'package:coinkeeper/screens/app_template.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -6,14 +6,14 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Coin Keeper Material App",
-      home: HomePage(),
+      home: AppTemplate(),
     );
   }
 }
