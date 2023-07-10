@@ -21,16 +21,6 @@ class SQLHelper {
           amount INTEGER, 
           updatedAt TIMESTAMP NOT NULL
           )""");
-
-    await database.insert(
-      'wallets',
-      {
-        "title": "cash",
-        "amount": 0,
-        "updatedAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())
-      },
-      conflictAlgorithm: sql.ConflictAlgorithm.replace,
-    );
   }
 
   // open db
@@ -56,7 +46,17 @@ class SQLHelper {
   static Future<List<Map<String, dynamic>>> getWalletItems() async {
     final db = await SQLHelper.db();
 
-    return db.query('wallets', orderBy: "id desc");
+    // return db.query('wallets');
+    return db.rawQuery('SELECT * FROM wallets');
+  }
+
+  static Future<List<Map<String, dynamic>>> getCashWalletItems(
+      String wallet) async {
+    final db = await SQLHelper.db();
+
+    // return db.query('wallets', orderBy: "id desc");
+    return db.rawQuery(
+        'SELECT * FROM wallets WHERE title = ? order by id desc', [wallet]);
   }
 
   // create record
@@ -87,26 +87,41 @@ class SQLHelper {
   }
 
   // custom wallet
-  static Future<int> createWalletItem(int amount, String? wallet) async {
+  static Future createWalletItem(int amount, String? wallet) async {
     final db = await SQLHelper.db();
 
     wallet = (wallet ?? "cash");
 
-    final result = await db.rawQuery('SELECT SUM(amount) as total FROM wallets WHERE title = ?', [wallet]);
+    final result = await db.rawQuery(
+      'SELECT * FROM wallets WHERE title = ?',
+      [wallet],
+    );
 
-    final total = result.first['total'] ?? 0;
-    final int parsedTotal =
-        total is int ? total : int.tryParse(total.toString()) ?? 0;
-    final int calculatedTotal = parsedTotal + amount;
+    if (result.isEmpty) {
+      await db.insert(
+        'wallets',
+        {
+          "title": wallet,
+          "amount": amount,
+          "updatedAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+        },
+        conflictAlgorithm: sql.ConflictAlgorithm.replace,
+      );
+    } else {
+      final total = result.first['amount'] ?? 0;
+      final int parsedTotal =
+          total is int ? total : int.tryParse(total.toString()) ?? 0;
+      final int calculatedTotal = parsedTotal + amount;
 
-    int id = await db.rawUpdate(
-        'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?', [
-      calculatedTotal,
-      DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
-      wallet
-    ]);
-
-    return id;
+      await db.rawUpdate(
+        'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
+        [
+          calculatedTotal,
+          DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+          wallet,
+        ],
+      );
+    }
   }
 
   // drop database

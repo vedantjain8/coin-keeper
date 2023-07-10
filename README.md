@@ -18,13 +18,21 @@ samples, guidance on mobile development, and a full API reference.
 ## Dependencies
 flutter pub add sqflite
 
-## Urgent TODO:
-- [ ] home.dart me keyboard show nahi ho raha hai, therefor resulting in return of 0 in media query bottom insets
-
 ## TODO
-- [ ] add validation for invalid wallet data entry
-- [ ] show distinct category for new expense or income in showform with menu item
-- [ ] infinite scroll pagination
+- [x] new wallet item is not working
+- [ ] wallet page auto refresh
+- [ ] add validation for invalid wallet data entry, add number keyboard for amount data entry
+- [ ] add onclick for each transaction and open edit page [to include: change date and time, title, description, amount, wallet, category, income/expense]
+- [ ] TODOs inline code ko complete karna hai
+- [ ] show distinct category for as menu item text box in add_transaction screen
+- [ ] infinite scroll pagination, lazy loading
+- [ ] settings page [show github profile, change currency, delete all data, show app version, account holder name, export data to csv or other, import data,]
+- [ ] caching data
+- [ ] design
+
+### maybe TODOs
+- [ ] add multi user
+- [ ] multiple language support
 
 ## Code snippets
 - wallet list view
