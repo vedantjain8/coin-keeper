@@ -40,7 +40,15 @@ class SQLHelper {
   static Future<List<Map<String, dynamic>>> getItems() async {
     final db = await SQLHelper.db();
 
-    return db.query('transactions', orderBy: "id desc");
+    return db.query('transactions', orderBy: "createdAt desc");
+  }
+  
+  // read single record
+  static Future<List<Map<String, dynamic>>> getItemsFromID(int id) async {
+    final db = await SQLHelper.db();
+
+    return db.rawQuery(
+        'SELECT * FROM transactions WHERE id = ?', [id]);
   }
 
   static Future<List<Map<String, dynamic>>> getWalletItems() async {

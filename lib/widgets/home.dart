@@ -1,4 +1,5 @@
-import 'package:coinkeeper/widgets/add_transaction.dart';
+import 'package:coinkeeper/screens/add_transaction.dart';
+import 'package:coinkeeper/screens/edit_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:coinkeeper/theme/color.dart';
@@ -135,9 +136,22 @@ class _HomePageState extends State<HomePage> {
               : ListView.builder(
                   itemCount: _journals.length,
                   itemBuilder: (context, index) => Card(
-                    color: secondaryColor,
+                    color: (_journals[index]['type'].toString().toLowerCase() ==
+                            "income")
+                        ? Colors.green[100]
+                        : Colors.red[100],
                     margin: const EdgeInsets.all(15),
                     child: ListTile(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EditTransaction(
+                              id: _journals[index]["id"],
+                              refreshData: refreshData
+                            ),
+                          ),
+                        );
+                      },
                       title: Text(_journals[index]['title'].toString()),
                       subtitle: Text(_journals[index]['createdAt']),
                       leading: (_journals[index]['wallet'] == "cash")
@@ -148,13 +162,14 @@ class _HomePageState extends State<HomePage> {
                           : Text(_journals[index]['wallet']),
                       trailing: Text(
                         _journals[index]['amount'].toString(),
-                        style: TextStyle(
-                            color: (_journals[index]['type']
-                                        .toString()
-                                        .toLowerCase() ==
-                                    "income")
-                                ? Colors.green
-                                : Colors.red),
+                        // style: const TextStyle(
+                        //     color: Colors.white),
+                        // color: (_journals[index]['type']
+                        //             .toString()
+                        //             .toLowerCase() ==
+                        //         "income")
+                        //     ? Colors.green
+                        //     : Colors.red),
                       ),
                     ),
                   ),

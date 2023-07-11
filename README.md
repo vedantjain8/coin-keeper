@@ -20,8 +20,8 @@ flutter pub add sqflite
 
 ## TODO
 - [x] new wallet item is not working
+- [x] add validation and add number keyboard for decimal data entry
 - [ ] wallet page auto refresh
-- [ ] add validation for invalid wallet data entry, add number keyboard for amount data entry
 - [ ] add onclick for each transaction and open edit page [to include: change date and time, title, description, amount, wallet, category, income/expense]
 - [ ] TODOs inline code ko complete karna hai
 - [ ] show distinct category for as menu item text box in add_transaction screen
@@ -29,6 +29,7 @@ flutter pub add sqflite
 - [ ] settings page [show github profile, change currency, delete all data, show app version, account holder name, export data to csv or other, import data,]
 - [ ] caching data
 - [ ] design
+- [ ] code cleanup
 
 ### maybe TODOs
 - [ ] add multi user
