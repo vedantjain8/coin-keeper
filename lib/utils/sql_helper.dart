@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 class SQLHelper {
   // create table
   static Future<void> createTables(sql.Database database) async {
-    await database.execute("""CREATE TABLE transactions(
+    await database.execute("""CREATE TABLE IF NOT EXISTS transactions(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
           title TEXT, 
           description TEXT, 
@@ -15,7 +15,7 @@ class SQLHelper {
           createdAt TIMESTAMP NOT NULL
           )""");
 
-    await database.execute("""CREATE TABLE wallets(
+    await database.execute("""CREATE TABLE IF NOT EXISTS wallets(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
           title TEXT UNIQUE, 
           amount INTEGER, 
@@ -42,27 +42,26 @@ class SQLHelper {
 
     return db.query('transactions', orderBy: "createdAt desc");
   }
-  
+
   // read single record
   static Future<List<Map<String, dynamic>>> getItemsFromID(int id) async {
     final db = await SQLHelper.db();
 
-    return db.rawQuery(
-        'SELECT * FROM transactions WHERE id = ?', [id]);
+    return db.rawQuery('SELECT * FROM transactions WHERE id = ?', [id]);
   }
 
+  // read all wallet items
   static Future<List<Map<String, dynamic>>> getWalletItems() async {
     final db = await SQLHelper.db();
 
-    // return db.query('wallets');
     return db.rawQuery('SELECT * FROM wallets');
   }
 
+  // read a specific wallet
   static Future<List<Map<String, dynamic>>> getCashWalletItems(
       String wallet) async {
     final db = await SQLHelper.db();
 
-    // return db.query('wallets', orderBy: "id desc");
     return db.rawQuery(
         'SELECT * FROM wallets WHERE title = ? order by id desc', [wallet]);
   }
@@ -94,7 +93,7 @@ class SQLHelper {
     return id; //returns 1
   }
 
-  // custom wallet
+  // create custom wallet
   static Future createWalletItem(int amount, String? wallet) async {
     final db = await SQLHelper.db();
 
@@ -130,6 +129,28 @@ class SQLHelper {
         ],
       );
     }
+  }
+
+  // update item
+  static Future<int> updateItem(int id, String title, String? description,
+      int amount, String? wallet, String type, String? category) async {
+    final db = await SQLHelper.db();
+
+    final data = {
+      'title': title,
+      'description': description,
+      'amount': amount,
+      'wallet': wallet,
+      'type': type,
+      'category': category,
+      "createdAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())
+    };
+
+    final result = db.update('transactions', data, where: "id = ?", whereArgs: [id]);
+    
+    // update wallet table data
+    SQLHelper.createWalletItem(amount, wallet);
+    return result;
   }
 
   // drop database

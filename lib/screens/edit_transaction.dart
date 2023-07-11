@@ -25,6 +25,7 @@ class _EditTransactionState extends State<EditTransaction> {
     setState(() {
       _transactionItem = data;
       _isLoading = false;
+      _typeController = _transactionItem[0]['type'];
     });
   }
 
@@ -39,7 +40,7 @@ class _EditTransactionState extends State<EditTransaction> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       // submit sql insert query
-      await _addItem();
+      await _updateItem();
 
       widget.refreshData();
 
@@ -51,15 +52,15 @@ class _EditTransactionState extends State<EditTransaction> {
     }
   }
 
-  // TODO add update code here
-  Future<void> _addItem() async {
+  Future<void> _updateItem() async {
     try {
-      await SQLHelper.createItem(
+      await SQLHelper.updateItem(transactionId, 
         (_titleController.isEmpty) ? "Adjusted Balance" : _titleController,
         _descriptionController,
-        (_typeController.toString().toLowerCase() == "income")
-            ? int.parse('+$_amountController')
-            : int.parse('-$_amountController'),
+        int.parse(_amountController),
+        // (_typeController.toString().toLowerCase() == "income")
+        //     ? int.parse('+$_amountController')
+        //     : int.parse('-$_amountController'),
         (_walletController.isEmpty) ? "cash" : _walletController,
         _typeController,
         _categoryController,
@@ -141,31 +142,30 @@ class _EditTransactionState extends State<EditTransaction> {
                               labelText: 'Description',
                             ),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Radio(
-                                value: 'income',
-                                groupValue: _typeController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _typeController = value.toString();
-                                  });
-                                },
-                              ),
-                              const Text('Income'),
-                              const SizedBox(width: 20),
-                              Radio(
-                                value: 'expense',
-                                groupValue: _typeController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _typeController = value.toString();
-                                  });
-                                },
-                              ),
-                              const Text('Expense'),
-                            ],
+                          ListTile(
+                          title: const Text('Income'),
+                            leading: Radio(
+                              value: 'income',
+                              groupValue: _typeController,
+                              onChanged: (value) {
+                                setState(() {
+                                  _typeController = value.toString();
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          ListTile(
+                          title: const Text('Expense'),
+                            leading: Radio(
+                              value: 'expense',
+                              groupValue: _typeController,
+                              onChanged: (value) {
+                                setState(() {
+                                  _typeController = value.toString();
+                                });
+                              },
+                            ),
                           ),
                           TextFormField(
                             initialValue: _transactionItem[0]['amount'].toString(),
@@ -186,7 +186,7 @@ class _EditTransactionState extends State<EditTransaction> {
                             ),
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp(r'^\d+\.?\d{0,1}'))
+                                  RegExp(r'^\-?\d{0,10}\.?\d{0,2}'))
                             ],
                             decoration: const InputDecoration(
                               labelText: 'Amount',
