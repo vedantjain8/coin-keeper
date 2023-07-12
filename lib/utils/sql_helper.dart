@@ -8,7 +8,7 @@ class SQLHelper {
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
           title TEXT, 
           description TEXT, 
-          amount INTEGER, 
+          amount FLOAT, 
           wallet TEXT NOT NULL, 
           type TEXT NOT NULL,
           category TEXT,
@@ -18,7 +18,7 @@ class SQLHelper {
     await database.execute("""CREATE TABLE IF NOT EXISTS wallets(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
           title TEXT UNIQUE, 
-          amount INTEGER, 
+          amount FLOAT, 
           updatedAt TIMESTAMP NOT NULL
           )""");
   }
@@ -40,7 +40,7 @@ class SQLHelper {
   static Future<List<Map<String, dynamic>>> getItems() async {
     final db = await SQLHelper.db();
 
-    return db.query('transactions', orderBy: "createdAt desc");
+    return db.query('transactions', orderBy: "id desc");
   }
 
   // read single record
@@ -67,7 +67,7 @@ class SQLHelper {
   }
 
   // create record
-  static Future<int> createItem(String title, String? description, int amount,
+  static Future<int> createItem(String title, String? description, double amount,
       String? wallet, String type, String? category) async {
     final db = await SQLHelper.db();
 
@@ -94,7 +94,7 @@ class SQLHelper {
   }
 
   // create custom wallet
-  static Future createWalletItem(int amount, String? wallet) async {
+  static Future createWalletItem(double amount, String? wallet) async {
     final db = await SQLHelper.db();
 
     wallet = (wallet ?? "cash");
@@ -116,9 +116,9 @@ class SQLHelper {
       );
     } else {
       final total = result.first['amount'] ?? 0;
-      final int parsedTotal =
-          total is int ? total : int.tryParse(total.toString()) ?? 0;
-      final int calculatedTotal = parsedTotal + amount;
+      final double parsedTotal =
+          total is double ? total : double.tryParse(total.toString()) ?? 0;
+      final double calculatedTotal = parsedTotal + amount;
 
       await db.rawUpdate(
         'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
@@ -133,7 +133,7 @@ class SQLHelper {
 
   // update item
   static Future<int> updateItem(int id, String title, String? description,
-      int amount, String? wallet, String type, String? category) async {
+      double amount, String? wallet, String type, String? category) async {
     final db = await SQLHelper.db();
 
     final data = {

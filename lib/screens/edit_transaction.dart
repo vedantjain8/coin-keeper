@@ -57,7 +57,7 @@ class _EditTransactionState extends State<EditTransaction> {
       await SQLHelper.updateItem(transactionId, 
         (_titleController.isEmpty) ? "Adjusted Balance" : _titleController,
         _descriptionController,
-        int.parse(_amountController),
+        double.parse(_amountController),
         // (_typeController.toString().toLowerCase() == "income")
         //     ? int.parse('+$_amountController')
         //     : int.parse('-$_amountController'),
