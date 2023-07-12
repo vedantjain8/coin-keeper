@@ -21,7 +21,7 @@ flutter pub add sqflite
 ## TODO
 - [x] new wallet item is not working
 - [x] add validation and add number keyboard for decimal data entry
-- [ ] fix: amount value calculation on updating query
+- [x] fix: amount value calculation on updating query
 - [ ] add interest calculation from [this](https://github.com/GAUTAMSHETA/Interest-management-application) repo
 - [ ] wallet page auto refresh
 - [ ] add onclick for each transaction and open edit page [to include: change date and time, title, description, amount, wallet, category, income/expense]

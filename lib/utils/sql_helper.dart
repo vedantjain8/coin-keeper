@@ -21,6 +21,8 @@ class SQLHelper {
           amount FLOAT, 
           updatedAt TIMESTAMP NOT NULL
           )""");
+
+    await SQLHelper.createWalletItem(false, 0, "cash", null);
   }
 
   // open db
@@ -67,8 +69,8 @@ class SQLHelper {
   }
 
   // create record
-  static Future<int> createItem(String title, String? description, double amount,
-      String? wallet, String type, String? category) async {
+  static Future<int> createItem(String title, String? description,
+      double amount, String? wallet, String type, String? category) async {
     final db = await SQLHelper.db();
 
     wallet = (wallet ?? "cash");
@@ -88,52 +90,64 @@ class SQLHelper {
       conflictAlgorithm: sql.ConflictAlgorithm.replace,
     );
 
-    SQLHelper.createWalletItem(amount, wallet);
+    SQLHelper.createWalletItem(false, amount, wallet,null);
 
     return id; //returns 1
   }
 
   // create custom wallet
-  static Future createWalletItem(double amount, String? wallet) async {
+  static Future createWalletItem(
+      bool update, double amount, String? wallet, double? oldTransactionAmount) async {
     final db = await SQLHelper.db();
 
     wallet = (wallet ?? "cash");
+    double calculatedTotal = 0.0;
 
     final result = await db.rawQuery(
       'SELECT * FROM wallets WHERE title = ?',
       [wallet],
     );
 
-    if (result.isEmpty) {
-      await db.insert(
-        'wallets',
-        {
-          "title": wallet,
-          "amount": amount,
-          "updatedAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
-        },
-        conflictAlgorithm: sql.ConflictAlgorithm.replace,
-      );
-    } else {
+    if (!update) {
+
+      if (result.isEmpty) {
+        await db.insert(
+          'wallets',
+          {
+            "title": wallet,
+            "amount": amount,
+            "updatedAt":
+                DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+          },
+          conflictAlgorithm: sql.ConflictAlgorithm.replace,
+        );
+      } else {
+        final total = result.first['amount'] ?? 0;
+        final double parsedTotal =
+            total is double ? total : double.tryParse(total.toString()) ?? 0;
+        calculatedTotal = parsedTotal + amount;
+      }
+    }else{
+      // final tranasactionResult = await db.query("select amount from transactions where id = ?", whereArgs: [transactionId]);
+      oldTransactionAmount = (oldTransactionAmount ?? 0.0);
       final total = result.first['amount'] ?? 0;
       final double parsedTotal =
-          total is double ? total : double.tryParse(total.toString()) ?? 0;
-      final double calculatedTotal = parsedTotal + amount;
-
-      await db.rawUpdate(
-        'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
-        [
-          calculatedTotal,
-          DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
-          wallet,
-        ],
-      );
+            total is double ? total : double.tryParse(total.toString()) ?? 0;
+      calculatedTotal = parsedTotal + amount - oldTransactionAmount;
     }
+    await db.rawUpdate(
+          'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
+          [
+            calculatedTotal,
+            DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+            wallet,
+          ],
+        );
   }
 
   // update item
   static Future<int> updateItem(int id, String title, String? description,
-      double amount, String? wallet, String type, String? category) async {
+      double amount, String? wallet, String type, String? category, double oldTransactionAmount) async {
     final db = await SQLHelper.db();
 
     final data = {
@@ -146,10 +160,11 @@ class SQLHelper {
       "createdAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())
     };
 
-    final result = db.update('transactions', data, where: "id = ?", whereArgs: [id]);
-    
+    final result =
+        db.update('transactions', data, where: "id = ?", whereArgs: [id]);
+
     // update wallet table data
-    SQLHelper.createWalletItem(amount, wallet);
+    SQLHelper.createWalletItem(true, amount, wallet, oldTransactionAmount);
     return result;
   }
 

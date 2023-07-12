@@ -26,6 +26,7 @@ class _EditTransactionState extends State<EditTransaction> {
       _transactionItem = data;
       _isLoading = false;
       _typeController = _transactionItem[0]['type'];
+      _oldTransactionAmount = _transactionItem[0]['amount'];
     });
   }
 
@@ -35,6 +36,7 @@ class _EditTransactionState extends State<EditTransaction> {
      String _walletController = "";
      String _categoryController = "";
      String _typeController = "";
+     double _oldTransactionAmount = 0.0;
 
 
   void _submitForm() async {
@@ -64,6 +66,7 @@ class _EditTransactionState extends State<EditTransaction> {
         (_walletController.isEmpty) ? "cash" : _walletController,
         _typeController,
         _categoryController,
+        _oldTransactionAmount
       );
     } catch (e) {
       print(e);
