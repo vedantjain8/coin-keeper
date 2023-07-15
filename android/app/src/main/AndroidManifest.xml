@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- permissions -->
+    <uses-permission android:name="android.permission.INTERNET" /> 
+    
     <application
         android:label="coinkeeper"
         android:name="${applicationName}"
@@ -30,4 +34,15 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <!-- added manually -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+
+    
 </manifest>

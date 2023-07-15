@@ -17,21 +17,23 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Dependencies
 flutter pub add sqflite
+flutter pub add url_launcher
+flutter pub add shared_preferences
 
 ## TODO
 - [x] new wallet item is not working
 - [x] add validation and add number keyboard for decimal data entry
 - [x] fix: amount value calculation on updating query
+- [x] add onclick for each transaction and open edit page [to include: title, description, amount, wallet, category, income/expense]
 - [ ] add interest calculation from [this](https://github.com/GAUTAMSHETA/Interest-management-application) repo
 - [ ] wallet page auto refresh
-- [ ] add onclick for each transaction and open edit page [to include: change date and time, title, description, amount, wallet, category, income/expense]
 - [ ] TODOs inline code ko complete karna hai
 - [ ] show distinct category for as menu item text box in add_transaction screen
 - [ ] infinite scroll pagination, lazy loading
-- [ ] settings page [show github profile, change currency, delete all data, show app version, account holder name, export data to csv or other, import data,]
+- [ ] settings page [show github profile, change currency, delete all data, show app version, account holder name, [export data to csv or other format and import](https://docs.flutter.dev/cookbook/persistence/reading-writing-files),]
 - [ ] caching data
 - [ ] design
-- [ ] code cleanup
+- [ ] code cleanup [add global text size to all text widget]
 
 ### maybe TODOs
 - [ ] add multi user
