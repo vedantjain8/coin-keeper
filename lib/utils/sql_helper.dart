@@ -27,8 +27,10 @@ class SQLHelper {
 
   // open db
   static Future<sql.Database> db() async {
+    var databasesPath = await sql.getDatabasesPath();
+    var path = '$databasesPath/transaction.db';
     return sql.openDatabase(
-      'transaction.db',
+      path,
       version: 1,
       onCreate: (sql.Database database, int version) async {
         var batch = database.batch();
@@ -90,14 +92,14 @@ class SQLHelper {
       conflictAlgorithm: sql.ConflictAlgorithm.replace,
     );
 
-    SQLHelper.createWalletItem(false, amount, wallet,null);
+    SQLHelper.createWalletItem(false, amount, wallet, null);
 
     return id; //returns 1
   }
 
   // create custom wallet
-  static Future createWalletItem(
-      bool update, double amount, String? wallet, double? oldTransactionAmount) async {
+  static Future createWalletItem(bool update, double amount, String? wallet,
+      double? oldTransactionAmount) async {
     final db = await SQLHelper.db();
 
     wallet = (wallet ?? "cash");
@@ -109,7 +111,6 @@ class SQLHelper {
     );
 
     if (!update) {
-
       if (result.isEmpty) {
         await db.insert(
           'wallets',
@@ -127,27 +128,34 @@ class SQLHelper {
             total is double ? total : double.tryParse(total.toString()) ?? 0;
         calculatedTotal = parsedTotal + amount;
       }
-    }else{
+    } else {
       // final tranasactionResult = await db.query("select amount from transactions where id = ?", whereArgs: [transactionId]);
       oldTransactionAmount = (oldTransactionAmount ?? 0.0);
       final total = result.first['amount'] ?? 0;
       final double parsedTotal =
-            total is double ? total : double.tryParse(total.toString()) ?? 0;
+          total is double ? total : double.tryParse(total.toString()) ?? 0;
       calculatedTotal = parsedTotal + amount - oldTransactionAmount;
     }
     await db.rawUpdate(
-          'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
-          [
-            calculatedTotal,
-            DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
-            wallet,
-          ],
-        );
+      'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
+      [
+        calculatedTotal,
+        DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+        wallet,
+      ],
+    );
   }
 
   // update item
-  static Future<int> updateItem(int id, String title, String? description,
-      double amount, String? wallet, String type, String? category, double oldTransactionAmount) async {
+  static Future<int> updateItem(
+      int id,
+      String title,
+      String? description,
+      double amount,
+      String? wallet,
+      String type,
+      String? category,
+      double oldTransactionAmount) async {
     final db = await SQLHelper.db();
 
     final data = {
