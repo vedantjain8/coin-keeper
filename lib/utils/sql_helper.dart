@@ -22,7 +22,7 @@ class SQLHelper {
           updatedAt TIMESTAMP NOT NULL
           )""");
 
-    await SQLHelper.createWalletItem(false, 0, "cash", null);
+    await SQLHelper.createWalletItem(0, "cash", null);
   }
 
   // open db
@@ -92,14 +92,14 @@ class SQLHelper {
       conflictAlgorithm: sql.ConflictAlgorithm.replace,
     );
 
-    SQLHelper.createWalletItem(false, amount, wallet, null);
+    SQLHelper.createWalletItem(amount, wallet, null);
 
     return id; //returns 1
   }
 
   // create custom wallet
-  static Future createWalletItem(bool update, double amount, String? wallet,
-      double? oldTransactionAmount) async {
+  static Future createWalletItem(
+      double amount, String? wallet, double? oldTransactionAmount) async {
     final db = await SQLHelper.db();
 
     wallet = (wallet ?? "cash");
@@ -110,24 +110,16 @@ class SQLHelper {
       [wallet],
     );
 
-    if (!update) {
-      if (result.isEmpty) {
-        await db.insert(
-          'wallets',
-          {
-            "title": wallet,
-            "amount": amount,
-            "updatedAt":
-                DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
-          },
-          conflictAlgorithm: sql.ConflictAlgorithm.replace,
-        );
-      } else {
-        final total = result.first['amount'] ?? 0;
-        final double parsedTotal =
-            total is double ? total : double.tryParse(total.toString()) ?? 0;
-        calculatedTotal = parsedTotal + amount;
-      }
+    if (result.isEmpty) {
+      await db.insert(
+        'wallets',
+        {
+          "title": wallet,
+          "amount": amount,
+          "updatedAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+        },
+        conflictAlgorithm: sql.ConflictAlgorithm.replace,
+      );
     } else {
       // final tranasactionResult = await db.query("select amount from transactions where id = ?", whereArgs: [transactionId]);
       oldTransactionAmount = (oldTransactionAmount ?? 0.0);
@@ -135,15 +127,16 @@ class SQLHelper {
       final double parsedTotal =
           total is double ? total : double.tryParse(total.toString()) ?? 0;
       calculatedTotal = parsedTotal + amount - oldTransactionAmount;
+
+      await db.rawUpdate(
+        'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
+        [
+          calculatedTotal,
+          DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+          wallet,
+        ],
+      );
     }
-    await db.rawUpdate(
-      'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
-      [
-        calculatedTotal,
-        DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
-        wallet,
-      ],
-    );
   }
 
   // update item
@@ -158,6 +151,10 @@ class SQLHelper {
       double oldTransactionAmount) async {
     final db = await SQLHelper.db();
 
+    amount = (type.toString().toLowerCase() == "income")
+        ? double.parse('+$amount')
+        : double.parse('-$amount');
+
     final data = {
       'title': title,
       'description': description,
@@ -168,11 +165,13 @@ class SQLHelper {
       "createdAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())
     };
 
+    print(data);
+
     final result =
         db.update('transactions', data, where: "id = ?", whereArgs: [id]);
 
     // update wallet table data
-    SQLHelper.createWalletItem(true, amount, wallet, oldTransactionAmount);
+    SQLHelper.createWalletItem(amount, wallet, oldTransactionAmount);
     return result;
   }
 

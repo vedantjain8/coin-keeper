@@ -32,13 +32,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void updateCurrencyName(String newName) {
     formatCurrency = NumberFormat.simpleCurrency(name: newName);
-    saveOption('currency',newName);
+    saveOption('currency', newName);
   }
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: getOption("userName").toString());
+    _nameController =
+        TextEditingController(text: getOption("userName").toString());
   }
 
   @override
@@ -71,7 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     maxLength: 20,
                     maxLines: 1,
                     onSubmitted: (value) {
-                      saveOption("userName",value);
+                      saveOption("userName", value);
                     },
                   ),
                 )
