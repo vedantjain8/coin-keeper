@@ -20,12 +20,13 @@ A new Flutter project.
 - [x] fix: amount value calculation on updating query
 - [x] add onclick for each transaction and open edit page [to include: title, description, amount, wallet, category, income/expense]
 - [x] settings page [show github profile, change currency, delete all data, account holder name]
-- [x] fix when editing transaction changing wallet causes imbalance of wallet amount
 
 ### Working on it
 
 ### TODOs
 - [ ] wallet page auto refresh
+- [ ] add modal file
+- [ ] fix when editing transaction changing wallet causes imbalance of wallet amount
 - [ ] [export data to csv or other format and import](https://docs.flutter.dev/cookbook/persistence/reading-writing-files)
 - [ ] TODOs inline code ko complete karna hai
 - [ ] show distinct category for as menu item text box in add_transaction screen

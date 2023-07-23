@@ -69,6 +69,14 @@ class SQLHelper {
     return db.rawQuery(
         'SELECT * FROM wallets WHERE title = ? order by id desc', [wallet]);
   }
+  
+  static Future<List<Map<String, dynamic>>> getSpecifiedWalletItems(
+      String wallet) async {
+    final db = await SQLHelper.db();
+
+    return db.rawQuery(
+        'SELECT * FROM transactions WHERE wallet = ? order by id desc', [wallet]);
+  }
 
   // create record
   static Future<int> createItem(String title, String? description,
