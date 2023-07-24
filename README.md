@@ -20,26 +20,25 @@ A new Flutter project.
 - [x] fix: amount value calculation on updating query
 - [x] add onclick for each transaction and open edit page [to include: title, description, amount, wallet, category, income/expense]
 - [x] settings page [show github profile, change currency, delete all data, account holder name]
+- [x] fix sql_helper new wallet add amount [total wallet amount calculation]
+- [x] fix edit_transaction updateItem() values are not updating
+- [x] fix settings initial value from getting from shared preferences
 
 ### Working on it
 
 ### TODOs
 - [ ] wallet page auto refresh
 - [ ] add modal file
-- [ ] fix when editing transaction changing wallet causes imbalance of wallet amount
-- [ ] [export data to csv or other format and import](https://docs.flutter.dev/cookbook/persistence/reading-writing-files)
+- [ ] fix when editing transaction wallet amount does not update to new wallet
 - [ ] TODOs inline code ko complete karna hai
 - [ ] show distinct category for as menu item text box in add_transaction screen
 - [ ] infinite scroll pagination, lazy loading
-- [ ] fix dbExportToDownloadFolder in sql_helper.dart
-- [ ] fix settings initial value from getting from shared preferences
 - [ ] fix currency change [on restart the currency changes to default INR]
-- [ ] fix sql_helper new wallet add amount [total wallet amount calculation]
-- [ ] fix edit_transaction updateItem() values are not updating
 - [ ] add mobile platform validation for screen
 - [ ] caching data
 - [ ] design
 - [ ] code cleanup [add global text size to all text widget]
+- [ ] [export data to csv or other format and import](https://docs.flutter.dev/cookbook/persistence/reading-writing-files)
 - [ ] [build apk automatically](https://www.geeksforgeeks.org/flutter-building-and-releasing-apk-using-github-actions/)
 
 ### maybe TODOs
