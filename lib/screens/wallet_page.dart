@@ -17,7 +17,7 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
   bool _isLoading = true;
 
   void _refreshJournals() async {
-    final data = await SQLHelper.getSpecifiedWalletItems(walletHead);
+    final data = await SQLHelper.getItems(switchArg: "filterByWallet",wallet: "transactions", walletclm:  walletHead);
 
     setState(() {
       _journals = data;

@@ -41,41 +41,24 @@ class SQLHelper {
   }
 
   // read all record
-  static Future<List<Map<String, dynamic>>> getItems() async {
+  static Future<List<Map<String, dynamic>>> getItems(
+      {required String? switchArg, required String? wallet, int? idclm, String? titleclm, String? walletclm }) async {
     final db = await SQLHelper.db();
-
-    return db.query('transactions', orderBy: "id desc");
-  }
-
-  // read single record
-  static Future<List<Map<String, dynamic>>> getItemsFromID(int id) async {
-    final db = await SQLHelper.db();
-
-    return db.rawQuery('SELECT * FROM transactions WHERE id = ?', [id]);
-  }
-
-  // read all wallet items
-  static Future<List<Map<String, dynamic>>> getWalletItems() async {
-    final db = await SQLHelper.db();
-
-    return db.rawQuery('SELECT * FROM wallets');
-  }
-
-  // read a specific wallet
-  static Future<List<Map<String, dynamic>>> getCashWalletItems(
-      String wallet) async {
-    final db = await SQLHelper.db();
-
-    return db.rawQuery(
-        'SELECT * FROM wallets WHERE title = ? order by id desc', [wallet]);
-  }
-  
-  static Future<List<Map<String, dynamic>>> getSpecifiedWalletItems(
-      String wallet) async {
-    final db = await SQLHelper.db();
-
-    return db.rawQuery(
-        'SELECT * FROM transactions WHERE wallet = ? order by id desc', [wallet]);
+    switch (switchArg) {
+      case "all":
+        return db.rawQuery('SELECT * FROM ($wallet)');
+      case "filterById":
+        return db.rawQuery(
+            'SELECT * FROM ($wallet) WHERE id = ? order by id desc', [idclm]);
+      case "filterByTitle":
+        return db.rawQuery(
+            'SELECT * FROM ($wallet) WHERE title = ? order by id desc', [titleclm]);
+      case "filterByWallet":
+        return db.rawQuery(
+            'SELECT * FROM ($wallet) WHERE wallet = ? order by id desc', [walletclm]);
+      default:
+        return db.rawQuery("select * from transactions");
+    }
   }
 
   // create record
@@ -181,6 +164,16 @@ class SQLHelper {
     // update wallet table data
     SQLHelper.createWalletItem(amount, wallet, oldTransactionAmount);
     return result;
+  }
+
+  // delete transaction record
+  static Future<void> deleteItem(int id, double amount, String wallet) async {
+    final db = await SQLHelper.db();
+    try {
+      await db.delete("transactions", where: "id = ?", whereArgs: [id]);
+    } catch (e) {
+      print(e);
+    }
   }
 
   // drop database

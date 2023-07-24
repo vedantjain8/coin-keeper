@@ -20,7 +20,7 @@ class _EditTransactionState extends State<EditTransaction> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _loadJournal() async {
-    final data = await SQLHelper.getItemsFromID(transactionId);
+    final data = await SQLHelper.getItems(switchArg: "filterById", wallet: "transactions", idclm:transactionId);
 
     setState(() {
       _transactionItem = data;
@@ -77,6 +77,18 @@ class _EditTransactionState extends State<EditTransaction> {
     }
   }
 
+  Future<void> _deleteFormItem() async {
+    try {
+      await SQLHelper.deleteItem(transactionId, _amountController, _walletController);
+      widget.refreshData();
+
+      // close the screen
+      Navigator.of(context).pop();
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     transactionId = widget.id;
@@ -94,6 +106,43 @@ class _EditTransactionState extends State<EditTransaction> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            icon: const Icon(Icons.warning),
+                            iconColor: Colors.red,
+                            title: const Text("Are you sure?"),
+                            content: const SingleChildScrollView(
+                                child: Text(
+                                    "This action can't be undone!")),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text(
+                                  "Decline",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  _deleteFormItem();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text(
+                                  "Accept",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.red,
+        child: const Icon(Icons.delete_forever),
+      ),
       appBar: AppBar(
         title: Text("Edit Transaction ID: $transactionId"),
       ),

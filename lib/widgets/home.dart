@@ -19,8 +19,8 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = true;
 
   void _refreshJournals() async {
-    final data = await SQLHelper.getItems();
-    final cashWalletdata = await SQLHelper.getCashWalletItems("cash");
+    final data = await SQLHelper.getItems(switchArg: "all", wallet: "transactions");
+    final cashWalletdata = await SQLHelper.getItems(switchArg: "filterByTitle", wallet: "wallets", titleclm: "cash");
 
     setState(() {
       _journals = data;
