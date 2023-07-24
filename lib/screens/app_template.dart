@@ -48,7 +48,7 @@ class _AppTemplateState extends State<AppTemplate> {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.settings ,
+                      Icons.settings,
                       color: Colors.grey,
                     ),
                     SizedBox(
@@ -74,17 +74,17 @@ class _AppTemplateState extends State<AppTemplate> {
               switch (value) {
                 case 1:
                   Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AboutPage(),
-                  ),
-                );
+                    MaterialPageRoute(
+                      builder: (context) => const AboutPage(),
+                    ),
+                  );
                   break;
                 case 2:
                   Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsPage(),
-                  ),
-                );
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
+                    ),
+                  );
                   break;
 
                 default:

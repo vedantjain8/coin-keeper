@@ -42,7 +42,11 @@ class SQLHelper {
 
   // read all record
   static Future<List<Map<String, dynamic>>> getItems(
-      {required String? switchArg, required String? wallet, int? idclm, String? titleclm, String? walletclm }) async {
+      {required String? switchArg,
+      required String? wallet,
+      int? idclm,
+      String? titleclm,
+      String? walletclm}) async {
     final db = await SQLHelper.db();
     switch (switchArg) {
       case "all":
@@ -52,10 +56,12 @@ class SQLHelper {
             'SELECT * FROM ($wallet) WHERE id = ? order by id desc', [idclm]);
       case "filterByTitle":
         return db.rawQuery(
-            'SELECT * FROM ($wallet) WHERE title = ? order by id desc', [titleclm]);
+            'SELECT * FROM ($wallet) WHERE title = ? order by id desc',
+            [titleclm]);
       case "filterByWallet":
         return db.rawQuery(
-            'SELECT * FROM ($wallet) WHERE wallet = ? order by id desc', [walletclm]);
+            'SELECT * FROM ($wallet) WHERE wallet = ? order by id desc',
+            [walletclm]);
       default:
         return db.rawQuery("select * from transactions");
     }

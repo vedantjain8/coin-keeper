@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> initOption() async{
+Future<void> initOption() async {
   // TODO use this function to init the shared preference
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('currency', "INR");

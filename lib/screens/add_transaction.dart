@@ -17,7 +17,7 @@ class _AddTransactionState extends State<AddTransaction> {
     if (_formKey.currentState!.validate()) {
       // submit sql insert query
       await _addItem();
-      
+
       widget.refreshData();
 
       // close the screen
