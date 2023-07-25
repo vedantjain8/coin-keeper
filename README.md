@@ -23,6 +23,7 @@ A new Flutter project.
 - [x] fix sql_helper new wallet add amount [total wallet amount calculation]
 - [x] fix edit_transaction updateItem() values are not updating
 - [x] fix settings initial value from getting from shared preferences
+- [x] show distinct category for as menu item text box in add_transaction screen
 
 ### Working on it
 
@@ -31,7 +32,6 @@ A new Flutter project.
 - [ ] add modal file
 - [ ] fix when editing transaction wallet amount does not update to new wallet
 - [ ] TODOs inline code ko complete karna hai
-- [ ] show distinct category for as menu item text box in add_transaction screen
 - [ ] infinite scroll pagination, lazy loading
 - [ ] fix currency change [on restart the currency changes to default INR]
 - [ ] add mobile platform validation for screen

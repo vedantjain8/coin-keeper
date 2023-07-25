@@ -17,8 +17,6 @@ class _SettingsPageState extends State<SettingsPage> {
   // variables
   String _dropdownValue = "";
   TextEditingController _nameController = TextEditingController();
-  // TODO add the initial value to the _nameController
-  // TODO add the initial value of currency from the sharedprefeneces
 
   // drop table
   Future<void> _doomTable() async {

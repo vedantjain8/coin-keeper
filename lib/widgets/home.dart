@@ -1,5 +1,6 @@
 import 'package:coinkeeper/screens/add_transaction.dart';
 import 'package:coinkeeper/screens/edit_transaction.dart';
+import 'package:coinkeeper/screens/wallet_page.dart';
 import 'package:flutter/material.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:coinkeeper/theme/color.dart';
@@ -16,17 +17,22 @@ class _HomePageState extends State<HomePage> {
   // variables
   List<Map<String, dynamic>> _journals = [];
   List<Map<String, dynamic>> _walletjournals = [];
+  List<Map<String, dynamic>> _categoriesjournals = [];
   bool _isLoading = true;
+  int _choiceIndex = 0;
 
   void _refreshJournals() async {
     final data =
         await SQLHelper.getItems(switchArg: "all", wallet: "transactions");
     final cashWalletdata = await SQLHelper.getItems(
         switchArg: "filterByTitle", wallet: "wallets", titleclm: "cash");
+    final categoriesdata = await SQLHelper.getItems(
+        switchArg: "categories", wallet: "transactions");
 
     setState(() {
       _journals = data;
       _walletjournals = cashWalletdata;
+      _categoriesjournals = categoriesdata;
       _isLoading = false;
     });
   }
@@ -107,8 +113,13 @@ class _HomePageState extends State<HomePage> {
                 child: InkWell(
                   splashColor: onClickColor,
                   onTap: () {
-                    // TODO: add navigation to wallets page of cash to show filtered cash transactions
-                    debugPrint('Card tapped.');
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const WalletDetailedPage(
+                          walletHead: "cash",
+                        ),
+                      ),
+                    );
                   },
                   child: SizedBox(
                     height: 80,
@@ -135,6 +146,61 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          (_categoriesjournals.isEmpty)
+              ? Container()
+              : Container(
+                  height: 60,
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _categoriesjournals.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ChoiceChip(
+                            label: const Text("All"),
+                            selected: _choiceIndex == index,
+                            selectedColor: Colors.blue[200],
+                            onSelected: (bool selected) async {
+                              final data = await SQLHelper.getItems(
+                                  switchArg: "all", wallet: "transactions");
+                              setState(() {
+                                _choiceIndex = selected ? index : 0;
+                                _journals = data;
+                              });
+                            },
+                            backgroundColor: Colors.grey[200],
+                            labelStyle: const TextStyle(color: Colors.black),
+                          ),
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ChoiceChip(
+                            label: Text(
+                                _categoriesjournals[index - 1]['category']),
+                            selected: _choiceIndex == index,
+                            selectedColor: Colors.blue[200],
+                            onSelected: (bool selected) async {
+                              final data = await SQLHelper.getItems(
+                                  switchArg: "filterByCategories",
+                                  wallet: "transactions",
+                                  categoriesclm: _categoriesjournals[index - 1]
+                                      ["category"]);
+                              setState(() {
+                                _choiceIndex = selected ? index : 0;
+                                _journals = data;
+                              });
+                            },
+                            backgroundColor: Colors.grey[200],
+                            labelStyle: const TextStyle(color: Colors.black),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
           Expanded(
             child: _isLoading
                 ? const Center(

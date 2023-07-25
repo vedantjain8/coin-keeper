@@ -1,4 +1,5 @@
 import 'package:coinkeeper/screens/wallet_page.dart';
+import 'package:coinkeeper/theme/consts.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:coinkeeper/theme/color.dart';
@@ -55,7 +56,6 @@ class _WalletPageState extends State<WalletPage> {
                 child: InkWell(
                   splashColor: onClickColor,
                   onTap: () {
-                    // TODO: add navigation to wallets page of cash to show filtered cash transactions
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => WalletDetailedPage(
@@ -73,7 +73,7 @@ class _WalletPageState extends State<WalletPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(_walletjournals[index]['title']),
-                              Text(_walletjournals[index]['amount'].toString())
+                              Text(formatCurrency.format(_walletjournals[index]['amount']))
                             ],
                           ),
                         ),

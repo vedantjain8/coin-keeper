@@ -63,14 +63,6 @@ class _AppTemplateState extends State<AppTemplate> {
             //     const Offset(0, 50),
             elevation: 2,
             onSelected: (value) {
-              // TODO: add page navigation for each button
-              // if (value == 1) {
-              //   Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) => const AboutPage(),
-              //     ),
-              //   );
-              // }
               switch (value) {
                 case 1:
                   Navigator.of(context).push(
