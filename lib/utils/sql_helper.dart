@@ -1,3 +1,4 @@
+import 'package:coinkeeper/settings/sharedpreferences.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:intl/intl.dart';
 
@@ -33,6 +34,7 @@ class SQLHelper {
       path,
       version: 1,
       onCreate: (sql.Database database, int version) async {
+        initOption();
         var batch = database.batch();
         await createTables(database);
         await batch.commit();
@@ -231,5 +233,6 @@ class SQLHelper {
     await db.execute('DROP TABLE IF EXISTS transactions');
     await db.execute('DROP TABLE IF EXISTS wallets');
     await SQLHelper.createTables(db);
+    deleteOption;
   }
 }

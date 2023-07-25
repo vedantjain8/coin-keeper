@@ -81,7 +81,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         width: 10,
                       ),
                       SizedBox(
-                        // TODO make this width dynamic
                         width: 220,
                         child: TextField(
                           controller: _nameController,
