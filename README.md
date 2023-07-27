@@ -25,6 +25,7 @@ A new Flutter project.
 - [x] fix settings initial value from getting from shared preferences
 - [x] show distinct category for as menu item text box in add_transaction screen
 - [x] complete inline TODOs
+- [x] infinite scroll pagination, lazy loading
 
 ### Working on it
 
@@ -32,7 +33,6 @@ A new Flutter project.
 - [ ] wallet page auto refresh
 - [ ] add modal file
 - [ ] fix when changing transaction wallet amount does not update to new wallet
-- [ ] infinite scroll pagination, lazy loading
 - [ ] fix currency change [on restart the currency changes to default INR]
 - [ ] add mobile platform validation for screen
 - [ ] caching data

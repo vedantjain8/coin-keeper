@@ -20,10 +20,14 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _categoriesjournals = [];
   bool _isLoading = true;
   int _choiceIndex = 0;
+  final ScrollController _scrollController = ScrollController();
+  int limitN = 5;
+  int offsetN = 10;
+  
 
   void _refreshJournals() async {
-    final data =
-        await SQLHelper.getItems(switchArg: "all", wallet: "transactions");
+    final data = await SQLHelper.getItems(
+        switchArg: "all", wallet: "transactions", limit: 10);
     final cashWalletdata = await SQLHelper.getItems(
         switchArg: "filterByTitle", wallet: "wallets", titleclm: "cash");
     final categoriesdata = await SQLHelper.getItems(
@@ -35,6 +39,7 @@ class _HomePageState extends State<HomePage> {
       _categoriesjournals = categoriesdata;
       _isLoading = false;
       _choiceIndex = 0;
+      offsetN = 10;
     });
   }
 
@@ -43,11 +48,41 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _refreshJournals(); // Loading the diary when the app starts
 
+    _scrollController.addListener(() {
+
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _loadMoreData();
+      }
+    });
+
     // ModalRoute.of(context)?.addScopedWillPopCallback((route) {
     //   refreshData();
     //   return Future.value(true);
     // } as WillPopCallback);
   }
+
+  void _loadMoreData() async {
+  // Implement the logic to fetch more data here
+  // For example, you can make an API call to get the next page of data
+  // and append it to the _journals list
+  // For this example, I'll just delay for 1 second to simulate loading
+  // await Future.delayed(const Duration(seconds: 4));
+
+  // Replace this with your actual logic to fetch more data
+  final newData = await SQLHelper.getItems(
+    switchArg: "limitAll",
+    wallet: "transactions",
+    limit: limitN,
+    offset: offsetN,
+  );
+
+  setState(() {
+    _journals = [..._journals, ...newData]; // Create a new list with the old and new data
+    offsetN += limitN;
+  });
+}
+
 
   Future<void> refreshData() async {
     setState(() {
@@ -208,6 +243,7 @@ class _HomePageState extends State<HomePage> {
                     child: CircularProgressIndicator(),
                   )
                 : ListView.builder(
+                  controller: _scrollController,
                     itemCount: _journals.length,
                     itemBuilder: (context, index) => Card(
                       color:

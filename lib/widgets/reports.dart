@@ -28,8 +28,8 @@ class _ReportsPageState extends State<ReportsPage> {
         wallet: "transactions",
         whereqry: "type",
         whereqryvalue: "income");
-    final categoriesdata4wallet = await SQLHelper.getItems(
-        switchArg: "walletReport", wallet: "wallets");
+    final categoriesdata4wallet =
+        await SQLHelper.getItems(switchArg: "walletReport", wallet: "wallets");
 
     setState(() {
       _expensesjournals = listToMap(categoriesdata4expense);
@@ -68,77 +68,86 @@ class _ReportsPageState extends State<ReportsPage> {
                     height: 40,
                   ),
                   const Text("Expense Chart"),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: PieChart(
-                      animationDuration: const Duration(milliseconds: 800),
-                      dataMap: _expensesjournals,
-                      initialAngleInDegree: 0,
-                      chartType: ChartType.ring,
-                      baseChartColor: Colors.grey[50]!.withOpacity(0.15),
-                      legendOptions: const LegendOptions(
-                        showLegends: true,
-                        legendPosition: LegendPosition.bottom,
-                      ),
-                      chartValuesOptions: const ChartValuesOptions(
-                        showChartValueBackground: true,
-                        showChartValues: true,
-                        showChartValuesInPercentage: true,
-                        showChartValuesOutside: false,
-                        decimalPlaces: 1,
-                      ),
-                    ),
-                  ),
+                  _expensesjournals.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: PieChart(
+                            animationDuration:
+                                const Duration(milliseconds: 800),
+                            dataMap: _expensesjournals,
+                            initialAngleInDegree: 0,
+                            chartType: ChartType.ring,
+                            baseChartColor: Colors.grey[50]!.withOpacity(0.15),
+                            legendOptions: const LegendOptions(
+                              showLegends: true,
+                              legendPosition: LegendPosition.bottom,
+                            ),
+                            chartValuesOptions: const ChartValuesOptions(
+                              showChartValueBackground: true,
+                              showChartValues: true,
+                              showChartValuesInPercentage: true,
+                              showChartValuesOutside: false,
+                              decimalPlaces: 1,
+                            ),
+                          ),
+                        )
+                      : const Text("NO DATA"),
                   const SizedBox(
                     height: 40,
                   ),
                   const Text("Income Chart"),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: PieChart(
-                      animationDuration: const Duration(milliseconds: 800),
-                      dataMap: _incomejournals,
-                      initialAngleInDegree: 0,
-                      chartType: ChartType.ring,
-                      baseChartColor: Colors.grey[50]!.withOpacity(0.15),
-                      legendOptions: const LegendOptions(
-                        showLegends: true,
-                        legendPosition: LegendPosition.bottom,
-                      ),
-                      chartValuesOptions: const ChartValuesOptions(
-                        showChartValueBackground: true,
-                        showChartValues: true,
-                        showChartValuesInPercentage: true,
-                        showChartValuesOutside: false,
-                        decimalPlaces: 1,
-                      ),
-                    ),
-                  ),
+                  _incomejournals.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: PieChart(
+                            animationDuration:
+                                const Duration(milliseconds: 800),
+                            dataMap: _incomejournals,
+                            initialAngleInDegree: 0,
+                            chartType: ChartType.ring,
+                            baseChartColor: Colors.grey[50]!.withOpacity(0.15),
+                            legendOptions: const LegendOptions(
+                              showLegends: true,
+                              legendPosition: LegendPosition.bottom,
+                            ),
+                            chartValuesOptions: const ChartValuesOptions(
+                              showChartValueBackground: true,
+                              showChartValues: true,
+                              showChartValuesInPercentage: true,
+                              showChartValuesOutside: false,
+                              decimalPlaces: 1,
+                            ),
+                          ),
+                        )
+                      : const Text("NOT DATA"),
                   const SizedBox(
                     height: 40,
                   ),
                   const Text("wallet Chart"),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: PieChart(
-                      animationDuration: const Duration(milliseconds: 800),
-                      dataMap: _walletjournals,
-                      initialAngleInDegree: 0,
-                      chartType: ChartType.ring,
-                      baseChartColor: Colors.grey[50]!.withOpacity(0.15),
-                      legendOptions: const LegendOptions(
-                        showLegends: true,
-                        legendPosition: LegendPosition.bottom,
-                      ),
-                      chartValuesOptions: const ChartValuesOptions(
-                        showChartValueBackground: true,
-                        showChartValues: true,
-                        showChartValuesInPercentage: true,
-                        showChartValuesOutside: false,
-                        decimalPlaces: 1,
-                      ),
-                    ),
-                  ),
+                  _walletjournals.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: PieChart(
+                            animationDuration:
+                                const Duration(milliseconds: 800),
+                            dataMap: _walletjournals,
+                            initialAngleInDegree: 0,
+                            chartType: ChartType.ring,
+                            baseChartColor: Colors.grey[50]!.withOpacity(0.15),
+                            legendOptions: const LegendOptions(
+                              showLegends: true,
+                              legendPosition: LegendPosition.bottom,
+                            ),
+                            chartValuesOptions: const ChartValuesOptions(
+                              showChartValueBackground: true,
+                              showChartValues: true,
+                              showChartValuesInPercentage: true,
+                              showChartValuesOutside: false,
+                              decimalPlaces: 1,
+                            ),
+                          ),
+                        )
+                      : const Text("NNOO DATA"),
                 ],
               ),
             ),

@@ -52,11 +52,19 @@ class SQLHelper {
     String? categoriesclm,
     String? whereqry,
     String? whereqryvalue,
+    int? offset,
+    int? limit,
   }) async {
     final db = await SQLHelper.db();
     switch (switchArg) {
+      // limit return
+      case "limitAll":
+        return db.rawQuery("select * from ($wallet) order by id desc limit $limit offset $offset");
       // Columns
       case "all":
+      if (limit != null){
+        return db.rawQuery("Select * from ($wallet) order by id desc limit $limit");
+      }
         return db.rawQuery('SELECT * FROM ($wallet) order by id desc');
       case "categories":
         return db.rawQuery('SELECT distinct(category) FROM ($wallet)');
