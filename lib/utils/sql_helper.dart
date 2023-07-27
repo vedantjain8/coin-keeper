@@ -50,11 +50,17 @@ class SQLHelper {
     String? titleclm,
     String? walletclm,
     String? categoriesclm,
+    String? whereqry,
+    String? whereqryvalue,
   }) async {
     final db = await SQLHelper.db();
     switch (switchArg) {
+      // Columns
       case "all":
         return db.rawQuery('SELECT * FROM ($wallet) order by id desc');
+      case "categories":
+        return db.rawQuery('SELECT distinct(category) FROM ($wallet)');
+      // Filters
       case "filterById":
         return db.rawQuery(
             'SELECT * FROM ($wallet) WHERE id = ? order by id desc', [idclm]);
@@ -70,8 +76,14 @@ class SQLHelper {
         return db.rawQuery(
             'SELECT * FROM ($wallet) WHERE category = ? order by id desc',
             [categoriesclm]);
-      case "categories":
-        return db.rawQuery('SELECT distinct(category) FROM ($wallet)');
+      // Reports
+      case "categoriesReport":
+        return db.rawQuery(
+            'SELECT DISTINCT category as asHead, SUM(amount) as totalAmount FROM ($wallet) where ($whereqry) = ? group by category',
+            [whereqryvalue]);
+      case "walletReport":
+        return db.rawQuery(
+            'SELECT DISTINCT title as asHead, amount as totalAmount FROM ($wallet) where amount > 0');
       default:
         return db.rawQuery("select * from transactions");
     }

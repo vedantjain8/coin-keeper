@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
       _walletjournals = cashWalletdata;
       _categoriesjournals = categoriesdata;
       _isLoading = false;
+      _choiceIndex = 0;
     });
   }
 

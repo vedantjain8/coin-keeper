@@ -1,5 +1,6 @@
 import 'package:coinkeeper/screens/popUpMenu/about.dart';
 import 'package:coinkeeper/screens/popUpMenu/settings.dart';
+import 'package:coinkeeper/widgets/reports.dart';
 import 'package:coinkeeper/widgets/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:coinkeeper/widgets/home.dart';
@@ -21,6 +22,7 @@ class _AppTemplateState extends State<AppTemplate> {
     List<Widget> widgetList = [
       const HomePage(),
       const WalletPage(),
+      const ReportsPage(),
     ];
     return Scaffold(
       appBar: AppBar(
@@ -102,6 +104,7 @@ class _AppTemplateState extends State<AppTemplate> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.wallet), label: "Wallets"),
+          BottomNavigationBarItem(icon: Icon(Icons.pie_chart ), label: "Report"),
         ],
       ),
     );

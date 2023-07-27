@@ -109,43 +109,53 @@ class _EditTransactionState extends State<EditTransaction> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            icon: const Icon(Icons.warning),
-            iconColor: Colors.red,
-            title: const Text("Are you sure?"),
-            content: const SingleChildScrollView(
-                child: Text("This action can't be undone!")),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  "Decline",
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  _deleteFormItem();
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  "Accept",
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
-          ),
-        ),
+        onPressed: () => _submitForm(),
         foregroundColor: Colors.white,
-        backgroundColor: Colors.red,
-        child: const Icon(Icons.delete_forever),
+        backgroundColor: Colors.green,
+        child: const Icon(Icons.check),
       ),
       appBar: AppBar(
         title: Text("Edit Transaction ID: $transactionId"),
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                  color: Colors.red,
+                  onPressed: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          icon: const Icon(Icons.warning),
+                          iconColor: Colors.red,
+                          title: const Text("Are you sure?"),
+                          content: const SingleChildScrollView(
+                              child: Text("This action can't be undone!")),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                "Decline",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                _deleteFormItem();
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                "Accept",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  icon: const Icon(Icons.delete_forever)),
+            ],
+          ),
+        ],
       ),
       body: (_isLoading)
           ? const Center(child: CircularProgressIndicator())
@@ -236,6 +246,13 @@ class _EditTransactionState extends State<EditTransaction> {
                             }
                           }
 
+                          if (_typeController.toString().toLowerCase() ==
+                              "expense") {
+                            if (double.tryParse(value) == null && double.tryParse(value)! < 0) {
+                              return "Please enter a valid expense amount";
+                            }
+                          }
+
                           return null;
                         },
                         onChanged: (value) {
@@ -289,10 +306,6 @@ class _EditTransactionState extends State<EditTransaction> {
                         decoration: const InputDecoration(
                           labelText: 'Category',
                         ),
-                      ),
-                      ElevatedButton(
-                        onPressed: _submitForm,
-                        child: const Text('Submit'),
                       ),
                     ],
                   ),
