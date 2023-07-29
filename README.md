@@ -7,11 +7,11 @@ A new Flutter project.
 - minimum Android SDK version required 19
 
 ## Dependencies
+- flutter pub add intl
 - flutter pub add sqflite
 - flutter pub add url_launcher
 - flutter pub add shared_preferences
-- flutter pub add package_info_plus
-> package_info_plus package not working with something in the app
+- flutter pub add pie_chart
 
 ## Roadmap
 ### Completed
@@ -26,6 +26,7 @@ A new Flutter project.
 - [x] show distinct category for as menu item text box in add_transaction screen
 - [x] complete inline TODOs
 - [x] infinite scroll pagination, lazy loading
+- [x] fix currency change [on restart the currency changes to default INR]
 
 ### Working on it
 
@@ -33,7 +34,6 @@ A new Flutter project.
 - [ ] wallet page auto refresh
 - [ ] add modal file
 - [ ] fix when changing transaction wallet amount does not update to new wallet
-- [ ] fix currency change [on restart the currency changes to default INR]
 - [ ] add mobile platform validation for screen
 - [ ] caching data
 - [ ] design

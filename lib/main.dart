@@ -1,8 +1,10 @@
 import 'package:coinkeeper/screens/app_template.dart';
+import 'package:coinkeeper/theme/consts.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  initCurrencyOption();
   runApp(const MyApp());
 }
 
