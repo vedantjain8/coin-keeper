@@ -23,7 +23,6 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   int limitN = 5;
   int offsetN = 10;
-  
 
   void _refreshJournals() async {
     final data = await SQLHelper.getItems(
@@ -49,7 +48,6 @@ class _HomePageState extends State<HomePage> {
     _refreshJournals(); // Loading the diary when the app starts
 
     _scrollController.addListener(() {
-
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         _loadMoreData();
@@ -63,26 +61,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadMoreData() async {
-  // Implement the logic to fetch more data here
-  // For example, you can make an API call to get the next page of data
-  // and append it to the _journals list
-  // For this example, I'll just delay for 1 second to simulate loading
-  // await Future.delayed(const Duration(seconds: 4));
+    // Implement the logic to fetch more data here
+    // For example, you can make an API call to get the next page of data
+    // and append it to the _journals list
+    // For this example, I'll just delay for 1 second to simulate loading
+    // await Future.delayed(const Duration(seconds: 4));
 
-  // Replace this with your actual logic to fetch more data
-  final newData = await SQLHelper.getItems(
-    switchArg: "limitAll",
-    wallet: "transactions",
-    limit: limitN,
-    offset: offsetN,
-  );
+    // Replace this with your actual logic to fetch more data
+    final newData = await SQLHelper.getItems(
+      switchArg: "limitAll",
+      wallet: "transactions",
+      limit: limitN,
+      offset: offsetN,
+    );
 
-  setState(() {
-    _journals = [..._journals, ...newData]; // Create a new list with the old and new data
-    offsetN += limitN;
-  });
-}
-
+    setState(() {
+      _journals = [
+        ..._journals,
+        ...newData
+      ]; // Create a new list with the old and new data
+      offsetN += limitN;
+    });
+  }
 
   Future<void> refreshData() async {
     setState(() {
@@ -243,7 +243,7 @@ class _HomePageState extends State<HomePage> {
                     child: CircularProgressIndicator(),
                   )
                 : ListView.builder(
-                  controller: _scrollController,
+                    controller: _scrollController,
                     itemCount: _journals.length,
                     itemBuilder: (context, index) => Card(
                       color:

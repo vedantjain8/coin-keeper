@@ -73,7 +73,8 @@ class _WalletPageState extends State<WalletPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(_walletjournals[index]['title']),
-                              Text(formatCurrency.format(_walletjournals[index]['amount']))
+                              Text(formatCurrency
+                                  .format(_walletjournals[index]['amount']))
                             ],
                           ),
                         ),

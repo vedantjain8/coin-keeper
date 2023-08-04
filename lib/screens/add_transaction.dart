@@ -72,22 +72,15 @@ class _AddTransactionState extends State<AddTransaction> {
             top: 15,
             left: 15,
             right: 15,
-            // bottom: MediaQuery.of(context).viewInsets.bottom + 45,
           ),
           child: Form(
             key: _formKey,
             child: Column(
               children: [
                 TextFormField(
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'Please enter your name';
-                  //   }
-                  //   return null;
-                  // },
                   onChanged: (value) {
                     setState(() {
-                      _titleController = value;
+                      _titleController = value.trim();
                     });
                   },
                   decoration: const InputDecoration(
@@ -95,16 +88,9 @@ class _AddTransactionState extends State<AddTransaction> {
                   ),
                 ),
                 TextFormField(
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'Please enter your email';
-                  //   }
-                  //   // Add more email validation logic if needed
-                  //   return null;
-                  // },
                   onChanged: (value) {
                     setState(() {
-                      _descriptionController = value;
+                      _descriptionController = value.trim();
                     });
                   },
                   decoration: const InputDecoration(
@@ -142,7 +128,6 @@ class _AddTransactionState extends State<AddTransaction> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter amount';
                     }
-                    // Add more password validation logic if needed
                     return null;
                   },
                   onChanged: (value) {
@@ -161,16 +146,9 @@ class _AddTransactionState extends State<AddTransaction> {
                   ),
                 ),
                 TextFormField(
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'Please enter amount';
-                  //   }
-                  //   // Add more password validation logic if needed
-                  //   return null;
-                  // },
                   onChanged: (value) {
                     setState(() {
-                      _walletController = value;
+                      _walletController = value.trim();
                     });
                   },
                   decoration: const InputDecoration(
@@ -178,16 +156,9 @@ class _AddTransactionState extends State<AddTransaction> {
                   ),
                 ),
                 TextFormField(
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'Please enter your password';
-                  //   }
-                  //   // Add more password validation logic if needed
-                  //   return null;
-                  // },
                   onChanged: (value) {
                     setState(() {
-                      _categoryController = value;
+                      _categoryController = value.trim();
                     });
                   },
                   decoration: const InputDecoration(
@@ -203,99 +174,6 @@ class _AddTransactionState extends State<AddTransaction> {
           ),
         ),
       ),
-      // child: Column(
-      //   mainAxisSize: MainAxisSize.min,
-      //   crossAxisAlignment: CrossAxisAlignment.end,
-      //   children: [
-      //     TextField(
-      //       controller: _titleController,
-      //       decoration: const InputDecoration(hintText: "Title"),
-      //     ),
-      //     const SizedBox(
-      //       height: 10,
-      //     ),
-      //     TextField(
-      //       controller: _descriptionController,
-      //       decoration: const InputDecoration(hintText: "description"),
-      //     ),
-      //     const SizedBox(
-      //       height: 10,
-      //     ),
-      //     Row(
-      //       children: [
-      //         Radio(
-      //           value: 'income',
-      //           groupValue: _typeController,
-      //           onChanged: (value) {
-      //             setState(() {
-      //               _typeController = value.toString();
-      //             });
-      //           },
-      //         ),
-      //         const Text('Income'),
-      //         const SizedBox(width: 10),
-      //         Radio(
-      //           value: 'expense',
-      //           groupValue: _typeController,
-      //           onChanged: (value) {
-      //             setState(() {
-      //               _typeController = value.toString();
-      //             });
-      //           },
-      //         ),
-      //         const Text('Expense'),
-      //       ],
-      //     ),
-      //     const SizedBox(
-      //       height: 10,
-      //     ),
-      //     TextField(
-      //       controller: _amountController,
-      //       keyboardType: const TextInputType.numberWithOptions(
-      //         decimal: true,
-      //       ),
-      //       inputFormatters: [
-      //         FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}'))
-      //       ],
-      //       decoration: const InputDecoration(hintText: "amount"),
-      //     ),
-      //     const SizedBox(
-      //       height: 10,
-      //     ),
-      //     TextField(
-      //       controller: _walletController,
-      //       decoration: const InputDecoration(hintText: "wallet"),
-      //     ),
-      //     const SizedBox(
-      //       height: 10,
-      //     ),
-      //     TextField(
-      //       controller: _categoryController,
-      //       decoration: const InputDecoration(hintText: "category"),
-      //     ),
-      //     const SizedBox(
-      //       height: 10,
-      //     ),
-      //     ElevatedButton(
-      //       onPressed: () async {
-      //         // submit sql insert query
-      //         await _addItem();
-
-      //         _titleController.text = '';
-      //         _descriptionController.text = '';
-      //         _amountController.text = '';
-      //         _walletController.text = '';
-      //         _categoryController.text = '';
-
-      //         widget.refreshData();
-
-      //         // close the screen
-      //         Navigator.of(context).pop();
-      //       },
-      //       child: const Text("Submit"),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }

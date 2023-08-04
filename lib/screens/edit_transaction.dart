@@ -66,9 +66,6 @@ class _EditTransactionState extends State<EditTransaction> {
           _titleController,
           _descriptionController,
           _amountController,
-          // (_typeController.toString().toLowerCase() == "income")
-          //     ? int.parse('+$_amountController')
-          //     : int.parse('-$_amountController'),
           _walletController,
           _typeController,
           _categoryController,
@@ -165,7 +162,6 @@ class _EditTransactionState extends State<EditTransaction> {
                   top: 15,
                   left: 15,
                   right: 15,
-                  // bottom: MediaQuery.of(context).viewInsets.bottom + 45,
                 ),
                 child: Form(
                   key: _formKey,
@@ -174,15 +170,9 @@ class _EditTransactionState extends State<EditTransaction> {
                       Text(_transactionItem.toString()),
                       TextFormField(
                         initialValue: _transactionItem[0]['title'],
-                        // validator: (value) {
-                        //   if (value == null || value.isEmpty) {
-                        //     return 'Please enter your name';
-                        //   }
-                        //   return null;
-                        // },
                         onChanged: (value) {
                           setState(() {
-                            _titleController = value;
+                            _titleController = value.trim();
                           });
                         },
                         decoration: const InputDecoration(
@@ -191,16 +181,9 @@ class _EditTransactionState extends State<EditTransaction> {
                       ),
                       TextFormField(
                         initialValue: _transactionItem[0]['description'],
-                        // validator: (value) {
-                        //   if (value == null || value.isEmpty) {
-                        //     return 'Please enter your email';
-                        //   }
-                        //   // Add more email validation logic if needed
-                        //   return null;
-                        // },
                         onChanged: (value) {
                           setState(() {
-                            _descriptionController = value;
+                            _descriptionController = value.trim();
                           });
                         },
                         decoration: const InputDecoration(
@@ -239,17 +222,17 @@ class _EditTransactionState extends State<EditTransaction> {
                             return 'Please enter amount';
                           }
 
-                          if (_typeController.toString().toLowerCase() ==
-                              "income") {
-                            if (double.tryParse('+$value') == null) {
-                              return "Please enter a valid positive amount";
-                            }
-                          }
+                          double parsedAmount = double.tryParse(value) ?? 0.0;
 
                           if (_typeController.toString().toLowerCase() ==
+                              "income") {
+                            if (parsedAmount < 0) {
+                              return "Please enter a valid positive amount";
+                            }
+                          } else if (_typeController.toString().toLowerCase() ==
                               "expense") {
-                            if (double.tryParse(value) == null && double.tryParse(value)! < 0) {
-                              return "Please enter a valid expense amount";
+                            if (parsedAmount >= 0) {
+                              return "Please enter a valid negative amount";
                             }
                           }
 
@@ -273,16 +256,9 @@ class _EditTransactionState extends State<EditTransaction> {
                       ),
                       TextFormField(
                         initialValue: _transactionItem[0]['wallet'],
-                        // validator: (value) {
-                        //   if (value == null || value.isEmpty) {
-                        //     return 'Please enter amount';
-                        //   }
-                        //   // Add more password validation logic if needed
-                        //   return null;
-                        // },
                         onChanged: (value) {
                           setState(() {
-                            _walletController = value;
+                            _walletController = value.trim();
                           });
                         },
                         decoration: const InputDecoration(
@@ -291,16 +267,9 @@ class _EditTransactionState extends State<EditTransaction> {
                       ),
                       TextFormField(
                         initialValue: _transactionItem[0]['category'],
-                        // validator: (value) {
-                        //   if (value == null || value.isEmpty) {
-                        //     return 'Please enter your password';
-                        //   }
-                        //   // Add more password validation logic if needed
-                        //   return null;
-                        // },
                         onChanged: (value) {
                           setState(() {
-                            _categoryController = value;
+                            _categoryController = value.trim();
                           });
                         },
                         decoration: const InputDecoration(

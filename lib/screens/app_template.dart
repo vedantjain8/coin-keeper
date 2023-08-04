@@ -104,7 +104,7 @@ class _AppTemplateState extends State<AppTemplate> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.wallet), label: "Wallets"),
-          BottomNavigationBarItem(icon: Icon(Icons.pie_chart ), label: "Report"),
+          BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: "Report"),
         ],
       ),
     );

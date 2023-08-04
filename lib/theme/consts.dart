@@ -2,7 +2,8 @@ import 'package:intl/intl.dart';
 import 'package:coinkeeper/settings/sharedpreferences.dart';
 
 String globalCurrencyName = "INR"; // Default currency
-NumberFormat formatCurrency = NumberFormat.simpleCurrency(name: globalCurrencyName);
+NumberFormat formatCurrency =
+    NumberFormat.simpleCurrency(name: globalCurrencyName);
 double globalFontSize = 18.0;
 
 void updateGlobalCurrencyName(String currencyName) {
