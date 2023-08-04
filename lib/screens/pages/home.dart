@@ -53,21 +53,9 @@ class _HomePageState extends State<HomePage> {
         _loadMoreData();
       }
     });
-
-    // ModalRoute.of(context)?.addScopedWillPopCallback((route) {
-    //   refreshData();
-    //   return Future.value(true);
-    // } as WillPopCallback);
   }
 
   void _loadMoreData() async {
-    // Implement the logic to fetch more data here
-    // For example, you can make an API call to get the next page of data
-    // and append it to the _journals list
-    // For this example, I'll just delay for 1 second to simulate loading
-    // await Future.delayed(const Duration(seconds: 4));
-
-    // Replace this with your actual logic to fetch more data
     final newData = await SQLHelper.getItems(
       switchArg: "limitAll",
       wallet: "transactions",
@@ -79,7 +67,7 @@ class _HomePageState extends State<HomePage> {
       _journals = [
         ..._journals,
         ...newData
-      ]; // Create a new list with the old and new data
+      ];
       offsetN += limitN;
     });
   }
@@ -126,17 +114,6 @@ class _HomePageState extends State<HomePage> {
                           AddTransaction(refreshData: refreshData),
                     ),
                   ),
-                  // onPressed: () async {
-                  //   await SQLHelper.createItem(
-                  //     "abc",
-                  //     "pqr",
-                  //     10,
-                  //     "cash",
-                  //     "income",
-                  //     "s",
-                  //   );
-                  //   _refreshJournals();
-                  // },
                   child: const Icon(Icons.add),
                 ),
               ),
@@ -272,14 +249,6 @@ class _HomePageState extends State<HomePage> {
                             : Text(_journals[index]['wallet']),
                         trailing: Text(
                           formatCurrency.format(_journals[index]['amount']),
-                          // style: const TextStyle(
-                          //     color: Colors.white),
-                          // color: (_journals[index]['type']
-                          //             .toString()
-                          //             .toLowerCase() ==
-                          //         "income")
-                          //     ? Colors.green
-                          //     : Colors.red),
                         ),
                       ),
                     ),

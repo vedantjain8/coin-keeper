@@ -1,9 +1,9 @@
 import 'package:coinkeeper/screens/popUpMenu/about.dart';
 import 'package:coinkeeper/screens/popUpMenu/settings.dart';
-import 'package:coinkeeper/widgets/reports.dart';
-import 'package:coinkeeper/widgets/wallet.dart';
+import 'package:coinkeeper/screens/pages/reports.dart';
+import 'package:coinkeeper/screens/pages/wallet.dart';
 import 'package:flutter/material.dart';
-import 'package:coinkeeper/widgets/home.dart';
+import 'package:coinkeeper/screens/pages/home.dart';
 
 class AppTemplate extends StatefulWidget {
   const AppTemplate({Key? key}) : super(key: key);

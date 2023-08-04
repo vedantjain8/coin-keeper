@@ -71,12 +71,16 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text("Settings"),
             ),
             body: Padding(
-              padding: const EdgeInsets.all(0.8),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("User Name:"),
+                      Text(
+                        "User Name:",
+                        style: TextStyle(fontSize: globalFontSize),
+                      ),
                       const SizedBox(
                         width: 10,
                       ),
@@ -94,6 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         "Select Currency:",
@@ -123,6 +128,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         "Delete all Data:",
