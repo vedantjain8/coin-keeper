@@ -1,4 +1,4 @@
-name: App Release
+name: Production App Release
 
 on:
   push:
