@@ -4,6 +4,7 @@ Future<void> initOption() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('currency', "INR");
   prefs.setString('userName', "Guest User");
+  prefs.setString('theme', "light");
 }
 
 Future<void> saveOption(String stringKey, String stringValue) async {

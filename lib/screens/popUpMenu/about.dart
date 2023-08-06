@@ -22,7 +22,10 @@ class _AboutPageState extends State<AboutPage> {
         child: Column(
           children: [
             const Text(
-                "Hello there! This is the developer of this app. Hope so you are enjoing this app."),
+                "Hello! This is the developer of this app. Hope so you are enjoing this app. For any bugs and issue reporting create a new issue on the github repo. Thank You!"),
+            const SizedBox(
+              height: 20,
+            ),
             ElevatedButton(
               onPressed: _openURL,
               child: const Text("Github Source Code"),

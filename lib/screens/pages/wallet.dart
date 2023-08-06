@@ -20,7 +20,7 @@ class _WalletPageState extends State<WalletPage> {
       _isLoading = true;
     });
 
-    SQLHelper.getItems(switchArg: "all", wallet: "wallets")
+    SQLHelper.getItems(switchArg: "all", tableName: "wallets")
         .then((cashWalletdata) {
       setState(() {
         _walletjournals = cashWalletdata;

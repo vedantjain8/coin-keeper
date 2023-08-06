@@ -77,9 +77,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "User Name:",
-                        style: TextStyle(fontSize: globalFontSize),
                       ),
                       const SizedBox(
                         width: 10,
@@ -100,9 +99,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Select Currency:",
-                        style: TextStyle(fontSize: globalFontSize),
                       ),
                       ButtonTheme(
                         alignedDropdown: true,
@@ -130,9 +128,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Delete all Data:",
-                        style: TextStyle(fontSize: globalFontSize),
                       ),
                       ElevatedButton(
                         onPressed: () => showDialog(
@@ -150,7 +147,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   Navigator.of(context).pop();
                                 },
                                 child: const Text(
-                                  "Decline",
+                                  "Cancel",
                                   style: TextStyle(color: Colors.blue),
                                 ),
                               ),
@@ -160,14 +157,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                   Navigator.of(context).pop();
                                 },
                                 child: const Text(
-                                  "Accept",
+                                  "Delete",
                                   style: TextStyle(color: Colors.red),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        child: const Text("BOOM BABY"),
+                        child: const Text("Delete All Data"),
                       ),
                     ],
                   ),

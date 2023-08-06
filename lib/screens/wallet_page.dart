@@ -1,6 +1,7 @@
 import 'package:coinkeeper/screens/edit_transaction.dart';
 import 'package:coinkeeper/theme/consts.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
+import 'package:coinkeeper/widgets/list_view_builder_widget.dart';
 import 'package:flutter/material.dart';
 
 class WalletDetailedPage extends StatefulWidget {
@@ -15,11 +16,14 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
   late String walletHead;
   List<Map<String, dynamic>> _journals = [];
   bool _isLoading = true;
+  final ScrollController _scrollController = ScrollController();
+  int limitN = 5;
+  int offsetN = 10;
 
   void _refreshJournals() async {
     final data = await SQLHelper.getItems(
         switchArg: "filterByWallet",
-        wallet: "transactions",
+        tableName: "transactions",
         walletclm: walletHead);
 
     setState(() {
@@ -33,6 +37,27 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
     super.initState();
     walletHead = widget.walletHead;
     _refreshJournals();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _loadMoreData();
+      }
+    });
+  }
+
+  void _loadMoreData() async {
+    final newData = await SQLHelper.getItems(
+      switchArg: "limitAll",
+      tableName: "transactions",
+      limit: limitN,
+      offset: offsetN,
+    );
+
+    setState(() {
+      _journals = [..._journals, ...newData];
+      offsetN += limitN;
+    });
   }
 
   Future<void> refreshData() async {
@@ -51,51 +76,12 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
       body: RefreshIndicator(
         onRefresh: refreshData,
         child: Container(
-          child: _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : ListView.builder(
-                  itemCount: _journals.length,
-                  itemBuilder: (context, index) => Card(
-                    color: (_journals[index]['type'].toString().toLowerCase() ==
-                            "income")
-                        ? Colors.green[100]
-                        : Colors.red[100],
-                    margin: const EdgeInsets.all(15),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => EditTransaction(
-                                id: _journals[index]["id"],
-                                refreshData: refreshData),
-                          ),
-                        );
-                      },
-                      title: Text(_journals[index]['title'].toString()),
-                      subtitle: Text(_journals[index]['createdAt']),
-                      leading: (_journals[index]['wallet'] == "cash")
-                          ? const Icon(
-                              Icons.payment,
-                              size: 42,
-                            )
-                          : Text(_journals[index]['wallet']),
-                      trailing: Text(
-                        formatCurrency.format(_journals[index]['amount']),
-                        // style: const TextStyle(
-                        //     color: Colors.white),
-                        // color: (_journals[index]['type']
-                        //             .toString()
-                        //             .toLowerCase() ==
-                        //         "income")
-                        //     ? Colors.green
-                        //     : Colors.red),
-                      ),
-                    ),
-                  ),
-                ),
-        ),
+            child: listViewBuilderWidget(
+          journals: _journals,
+          isLoading: _isLoading,
+          refreshData: refreshData,
+          scrollController: _scrollController,
+        )),
       ),
     );
   }

@@ -1,9 +1,11 @@
+import 'package:coinkeeper/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 
-Widget returnReportPieChart(
-  Map<String, double> journals,
-) {
+Widget returnReportPieChart({
+  required Map<String, double> journals,
+  required String centerText,
+}) {
   return journals.isNotEmpty
       ? Padding(
           padding: const EdgeInsets.all(8.0),
@@ -12,7 +14,8 @@ Widget returnReportPieChart(
             dataMap: journals,
             initialAngleInDegree: 0,
             chartType: ChartType.ring,
-            baseChartColor: Colors.grey[50]!.withOpacity(0.15),
+            centerText: centerText,
+            baseChartColor: pieChartBaseChartColor,
             legendOptions: const LegendOptions(
               showLegends: true,
               legendPosition: LegendPosition.bottom,

@@ -99,33 +99,43 @@ class _AddTransactionState extends State<AddTransaction> {
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Radio(
-                      value: 'income',
-                      groupValue: _typeController,
-                      onChanged: (value) {
-                        setState(() {
-                          _typeController = value.toString();
-                        });
-                      },
+                    Row(
+                      children: [
+                        Radio(
+                          value: 'income',
+                          groupValue: _typeController,
+                          onChanged: (value) {
+                            setState(() {
+                              _typeController = value.toString();
+                            });
+                          },
+                        ),
+                        const Text('Income'),
+                      ],
                     ),
-                    const Text('Income'),
-                    const SizedBox(width: 20),
-                    Radio(
-                      value: 'expense',
-                      groupValue: _typeController,
-                      onChanged: (value) {
-                        setState(() {
-                          _typeController = value.toString();
-                        });
-                      },
-                    ),
-                    const Text('Expense'),
+                    Row(
+                      children: [
+                        Radio(
+                          value: 'expense',
+                          groupValue: _typeController,
+                          onChanged: (value) {
+                            setState(() {
+                              _typeController = value.toString();
+                            });
+                          },
+                        ),
+                        const Text('Expense'),
+                      ],
+                    )
                   ],
                 ),
                 TextFormField(
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        double.tryParse(value) == 0.0) {
                       return 'Please enter amount';
                     }
                     return null;
@@ -164,6 +174,9 @@ class _AddTransactionState extends State<AddTransaction> {
                   decoration: const InputDecoration(
                     labelText: 'Category',
                   ),
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 ElevatedButton(
                   onPressed: _submitForm,

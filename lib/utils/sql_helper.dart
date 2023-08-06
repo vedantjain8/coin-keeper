@@ -34,7 +34,6 @@ class SQLHelper {
       path,
       version: 1,
       onCreate: (sql.Database database, int version) async {
-        initOption();
         var batch = database.batch();
         await createTables(database);
         await batch.commit();
@@ -45,7 +44,7 @@ class SQLHelper {
   // read all record
   static Future<List<Map<String, dynamic>>> getItems({
     required String? switchArg,
-    required String? wallet,
+    required String? tableName,
     int? idclm,
     String? titleclm,
     String? walletclm,
@@ -60,40 +59,41 @@ class SQLHelper {
       // limit return
       case "limitAll":
         return db.rawQuery(
-            "select * from ($wallet) order by id desc limit $limit offset $offset");
+            "select * from ($tableName) order by id desc limit $limit offset $offset");
       // Columns
       case "all":
         if (limit != null) {
           return db.rawQuery(
-              "Select * from ($wallet) order by id desc limit $limit");
+              "Select * from ($tableName) order by id desc limit $limit");
         }
-        return db.rawQuery('SELECT * FROM ($wallet) order by id desc');
+        return db.rawQuery('SELECT * FROM ($tableName) order by id desc');
       case "categories":
-        return db.rawQuery('SELECT distinct(category) FROM ($wallet)');
+        return db.rawQuery('SELECT distinct(category) FROM ($tableName)');
       // Filters
       case "filterById":
         return db.rawQuery(
-            'SELECT * FROM ($wallet) WHERE id = ? order by id desc', [idclm]);
+            'SELECT * FROM ($tableName) WHERE id = ? order by id desc',
+            [idclm]);
       case "filterByTitle":
         return db.rawQuery(
-            'SELECT * FROM ($wallet) WHERE title = ? order by id desc',
+            'SELECT * FROM ($tableName) WHERE title = ? order by id desc',
             [titleclm]);
       case "filterByWallet":
         return db.rawQuery(
-            'SELECT * FROM ($wallet) WHERE wallet = ? order by id desc',
+            'SELECT * FROM ($tableName) WHERE wallet = ? order by id desc',
             [walletclm]);
       case "filterByCategories":
         return db.rawQuery(
-            'SELECT * FROM ($wallet) WHERE category = ? order by id desc',
+            'SELECT * FROM ($tableName) WHERE category = ? order by id desc',
             [categoriesclm]);
       // Reports
       case "categoriesReport":
         return db.rawQuery(
-            'SELECT DISTINCT category as asHead, SUM(amount) as totalAmount FROM ($wallet) where ($whereqry) = ? group by category',
+            'SELECT DISTINCT category as asHead, SUM(amount) as totalAmount FROM ($tableName) where ($whereqry) = ? group by category',
             [whereqryvalue]);
       case "walletReport":
         return db.rawQuery(
-            'SELECT DISTINCT title as asHead, amount as totalAmount FROM ($wallet) where amount > 0');
+            'SELECT DISTINCT title as asHead, amount as totalAmount FROM ($tableName) where amount > 0');
       default:
         return db.rawQuery("select * from transactions");
     }
@@ -256,5 +256,6 @@ class SQLHelper {
     await db.execute('DROP TABLE IF EXISTS wallets');
     await SQLHelper.createTables(db);
     deleteOption;
+    initOption();
   }
 }

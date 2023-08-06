@@ -2,7 +2,6 @@ import 'package:coinkeeper/functions/convert.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:coinkeeper/widgets/report_pie.dart';
 import 'package:flutter/material.dart';
-import 'package:pie_chart/pie_chart.dart';
 
 class ReportsPage extends StatefulWidget {
   const ReportsPage({super.key});
@@ -13,24 +12,24 @@ class ReportsPage extends StatefulWidget {
 
 class _ReportsPageState extends State<ReportsPage> {
   // variables
-  Map<String, double> _expensesjournals = {};
-  Map<String, double> _incomejournals = {};
-  Map<String, double> _walletjournals = {};
+  Map<String, double> _expensesjournals = {},
+      _incomejournals = {},
+      _walletjournals = {};
   bool _isLoading = true;
 
   void _refreshJournals() async {
     final categoriesdata4expense = await SQLHelper.getItems(
         switchArg: "categoriesReport",
-        wallet: "transactions",
+        tableName: "transactions",
         whereqry: "type",
         whereqryvalue: "expense");
     final categoriesdata4income = await SQLHelper.getItems(
         switchArg: "categoriesReport",
-        wallet: "transactions",
+        tableName: "transactions",
         whereqry: "type",
         whereqryvalue: "income");
-    final categoriesdata4wallet =
-        await SQLHelper.getItems(switchArg: "walletReport", wallet: "wallets");
+    final categoriesdata4wallet = await SQLHelper.getItems(
+        switchArg: "walletReport", tableName: "wallets");
 
     setState(() {
       _expensesjournals = listToMap(categoriesdata4expense);
@@ -62,24 +61,24 @@ class _ReportsPageState extends State<ReportsPage> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  ElevatedButton(
-                      onPressed: refreshData, child: const Text("Refresh")),
-                  Text(_walletjournals.toString()),
                   const SizedBox(
                     height: 40,
                   ),
                   const Text("Expense Chart"),
-                  returnReportPieChart(_expensesjournals),
+                  returnReportPieChart(
+                      journals: _expensesjournals, centerText: "Expense Chart"),
                   const SizedBox(
                     height: 40,
                   ),
                   const Text("Income Chart"),
-                  returnReportPieChart(_incomejournals),
+                  returnReportPieChart(
+                      journals: _incomejournals, centerText: "Income Chart"),
                   const SizedBox(
                     height: 40,
                   ),
                   const Text("wallet Chart"),
-                  returnReportPieChart(_walletjournals),
+                  returnReportPieChart(
+                      journals: _walletjournals, centerText: "Wallet Chart"),
                 ],
               ),
             ),

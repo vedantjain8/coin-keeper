@@ -1,3 +1,4 @@
+import 'package:coinkeeper/theme/color.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,9 @@ class _EditTransactionState extends State<EditTransaction> {
 
   void _loadJournal() async {
     final data = await SQLHelper.getItems(
-        switchArg: "filterById", wallet: "transactions", idclm: transactionId);
+        switchArg: "filterById",
+        tableName: "transactions",
+        idclm: transactionId);
 
     setState(() {
       _transactionItem = data;
@@ -107,8 +110,8 @@ class _EditTransactionState extends State<EditTransaction> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => _submitForm(),
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.green,
+        foregroundColor: fabForegroundColor,
+        backgroundColor: fabBackgroundColor,
         child: const Icon(Icons.check),
       ),
       appBar: AppBar(
@@ -167,7 +170,6 @@ class _EditTransactionState extends State<EditTransaction> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      Text(_transactionItem.toString()),
                       TextFormField(
                         initialValue: _transactionItem[0]['title'],
                         onChanged: (value) {
@@ -218,7 +220,9 @@ class _EditTransactionState extends State<EditTransaction> {
                       TextFormField(
                         initialValue: _transactionItem[0]['amount'].toString(),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              double.tryParse(value) == 0.0) {
                             return 'Please enter amount';
                           }
 
