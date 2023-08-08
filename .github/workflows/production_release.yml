@@ -43,8 +43,12 @@ jobs:
       
       - name: Release Body Content
         run: |
-          echo md5 check sum >> bodyContent.txt
-          md5sum build/app/outputs/flutter-apk/app-release.apk >> bodyContent.txt
+          echo "MD5 Check Sum: " >> ./bodyContent.txt
+          md5sum build/app/outputs/bundle/release/app-release.aab >> ./bodyContent.txt
+          md5sum build/app/outputs/flutter-apk/app-release.apk >> ./bodyContent.txt
+          md5sum build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk >> ./bodyContent.txt
+          md5sum build/app/outputs/flutter-apk/app-arm64-v8a-release.apk >> ./bodyContent.txt
+          md5sum build/app/outputs/flutter-apk/app-x86_64-release.apk >> ./bodyContent.txt
         
       - name: Released
         uses: ncipollo/release-action@v1.12.0

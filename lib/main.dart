@@ -1,4 +1,4 @@
-import 'package:coinkeeper/screens/app_template.dart';
+import 'package:coinkeeper/screens/layout/responsive.dart';
 import 'package:coinkeeper/theme/consts.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Coin Keeper Material App",
       theme: ThemeData(useMaterial3: true),
-      home: const AppTemplate(),
+      home: const ResponsiveLayout(),
     );
   }
 }

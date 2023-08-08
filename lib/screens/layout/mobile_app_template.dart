@@ -5,14 +5,14 @@ import 'package:coinkeeper/screens/pages/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:coinkeeper/screens/pages/home.dart';
 
-class AppTemplate extends StatefulWidget {
-  const AppTemplate({Key? key}) : super(key: key);
+class MobileAppTemplate extends StatefulWidget {
+  const MobileAppTemplate({Key? key}) : super(key: key);
 
   @override
-  State<AppTemplate> createState() => _AppTemplateState();
+  State<MobileAppTemplate> createState() => _MobileAppTemplateState();
 }
 
-class _AppTemplateState extends State<AppTemplate> {
+class _MobileAppTemplateState extends State<MobileAppTemplate> {
   // variables
   int _bottomNavigationBarIndex = 0;
   List<Widget> widgetList = [];

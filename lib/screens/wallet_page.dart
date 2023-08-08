@@ -1,5 +1,3 @@
-import 'package:coinkeeper/screens/edit_transaction.dart';
-import 'package:coinkeeper/theme/consts.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:coinkeeper/widgets/list_view_builder_widget.dart';
 import 'package:flutter/material.dart';
