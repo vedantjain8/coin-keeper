@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart' as sql;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  _LoadSQLTable.db();
+  await _LoadSQLTable.db();
   await initCurrencyOption();
   runApp(const MyApp());
 }
