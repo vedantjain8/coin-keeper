@@ -1,5 +1,5 @@
 import 'package:coinkeeper/screens/layout/responsive.dart';
-import 'package:coinkeeper/theme/consts.dart';
+import 'package:coinkeeper/data/consts.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart' as sql;

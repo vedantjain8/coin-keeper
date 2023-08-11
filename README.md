@@ -30,6 +30,9 @@ A new Flutter project.
 - [x] fix expense edit negative amount
 
 ### Working on it
+- [ ] complete transaction.dart for date time selection with db table update
+- [ ] update the sql_helper according to the datetime select code
+- [ ] prevent stack overflow in list_view_builder and home.dart because of refresh incdicatior
 
 ### TODOs
 - [ ] wallet page auto refresh

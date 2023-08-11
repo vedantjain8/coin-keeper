@@ -1,10 +1,9 @@
 import 'package:coinkeeper/settings/sharedpreferences.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:coinkeeper/theme/consts.dart';
+import 'package:coinkeeper/data/consts.dart';
 import 'package:intl/intl.dart';
-
-List<String> _listCurrencies = ["USD", "INR", "EUR"];
+import 'package:coinkeeper/data/currency.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -39,7 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     final currency = await getOption("currency");
     setState(() {
-      _dropdownValue = currency ?? _listCurrencies.first;
+      _dropdownValue = currency ?? AppCurrency.listCurrencies.first;
     });
   }
 
@@ -114,7 +113,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               updateCurrencyName(_dropdownValue);
                             });
                           },
-                          items: _listCurrencies
+                          items: AppCurrency.listCurrencies
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,

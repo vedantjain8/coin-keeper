@@ -1,8 +1,9 @@
 import 'package:coinkeeper/screens/wallet_page.dart';
-import 'package:coinkeeper/theme/consts.dart';
+import 'package:coinkeeper/data/consts.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:coinkeeper/theme/color.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WalletPage extends StatefulWidget {
   const WalletPage({Key? key}) : super(key: key);
@@ -68,13 +69,28 @@ class _WalletPageState extends State<WalletPage> {
                       ? const Center(
                           child: CircularProgressIndicator(),
                         )
-                      : Center(
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(_walletjournals[index]['title']),
-                              Text(formatCurrency
-                                  .format(_walletjournals[index]['amount']))
+                              Text(_walletjournals[index]['title'], style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              const Text("Total Balance",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600)),
+                              Text(
+                                formatCurrency
+                                    .format(_walletjournals[index]['amount']),
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily:
+                                        GoogleFonts.jetBrainsMono().fontFamily),
+                              ),
                             ],
                           ),
                         ),

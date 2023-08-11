@@ -1,11 +1,11 @@
-import 'package:coinkeeper/screens/add_transaction.dart';
+import 'package:coinkeeper/screens/transaction.dart';
 import 'package:coinkeeper/screens/wallet_page.dart';
 import 'package:coinkeeper/settings/sharedpreferences.dart';
 import 'package:coinkeeper/widgets/list_view_builder_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:coinkeeper/theme/color.dart';
-import 'package:coinkeeper/theme/consts.dart';
+import 'package:coinkeeper/data/consts.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,10 +38,10 @@ class _HomePageState extends State<HomePage> {
         switchArg: "categories", tableName: "transactions");
 
     setState(() {
+      _isLoading = false;
       _journals = data;
       _walletjournals = cashWalletdata;
       _categoriesjournals = categoriesdata;
-      _isLoading = false;
       _choiceIndex = 0;
       offsetN = 10;
     });
@@ -109,13 +109,16 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => AddTransaction(refreshData: refreshData),
+            builder: (context) => TransactionForm(
+              // refreshData: refreshData
+              ),
           ),
         ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          ElevatedButton(onPressed: refreshData, child: Text("refresh")),
           Column(
             children: [
               Padding(
@@ -180,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                               const Text(
                                 "Balance",
                               ),
-                              const SizedBox(height: 30),
+                              const SizedBox(height: 50),
                               if (_walletjournals.isNotEmpty)
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -262,14 +265,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
           Expanded(
-            child: RefreshIndicator(
-              onRefresh: refreshData,
-              child: listViewBuilderWidget(
-                journals: _journals,
-                isLoading: _isLoading,
-                refreshData: refreshData,
-                scrollController: _scrollController,
-              ),
+            child: listViewBuilderWidget(
+              journals: _journals,
+              isLoading: _isLoading,
+              // refreshData: refreshData,
+              scrollController: _scrollController,
             ),
           ),
         ],

@@ -77,7 +77,7 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
             child: listViewBuilderWidget(
           journals: _journals,
           isLoading: _isLoading,
-          refreshData: refreshData,
+          // refreshData: refreshData,
           scrollController: _scrollController,
         )),
       ),
