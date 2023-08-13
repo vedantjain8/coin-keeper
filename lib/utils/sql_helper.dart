@@ -51,7 +51,7 @@ class SQLHelper {
     String? categoriesclm,
     String? whereqry,
     String? whereqryvalue,
-    int? offset,
+    int? offset = 0,
     int? limit,
   }) async {
     final db = await SQLHelper.db();
@@ -60,6 +60,10 @@ class SQLHelper {
       case "limitAll":
         return db.rawQuery(
             "select * from ($tableName) order by id desc limit $limit offset $offset");
+      case "limit":
+        return db.rawQuery(
+            "select * from ($tableName) where wallet = ? order by id desc limit $limit offset $offset",
+            [walletclm]);
       // Columns
       case "all":
         if (limit != null) {

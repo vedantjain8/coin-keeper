@@ -41,25 +41,26 @@ class _HomePageState extends State<HomePage> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        // _loadMoreData();
+        _loadMoreData();
         // TODO add load more data here
       }
     });
   }
 
-  // void _loadMoreData() async {
-  //   final newData = await SQLHelper.getItems(
-  //     switchArg: "limitAll",
-  //     tableName: "transactions",
-  //     limit: limitN,
-  //     offset: offsetN,
-  //   );
+  void _loadMoreData() async {
+    final newData = await SQLHelper.getItems(
+      switchArg: "limitAll",
+      tableName: "transactions",
+      limit: limitN,
+      offset: offsetN,
+    );
 
-  //   setState(() {
-  //     _journals = [..._journals, ...newData];
-  //     offsetN += limitN;
-  //   });
-  // }
+    // Update the stream with the new data
+    JournalStream().updateJournalData([...newData]);
+
+    // Increment the offset
+    offsetN += limitN;
+  }
 
   String greeting() {
     var hour = DateTime.now().hour;
@@ -74,8 +75,31 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _updateValues() async {
     getOption("userName").then((value) {
-      _username = (value == "null") ? "guest" : value;
+      setState(() {
+        _username = (value == null) ? "guest" : value;
+      });
     });
+  }
+
+  int i = 0;
+  Future<void> testingDta() async {
+    for (i = 0; i < 30; i++) {
+        const Duration(seconds: 25);
+      try {
+        await SQLHelper.createItem(
+          i.toString(),
+          "",
+          10.0,
+          "cash",
+          "income",
+          "",
+        );
+        loadData4NavPages();
+        print(i);
+      } catch (e) {
+        print(e);
+      }
+    }
   }
 
   @override
@@ -104,6 +128,9 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    ElevatedButton(
+                        onPressed: testingDta,
+                        child: const Text("Test data add")),
                     Text("Hi! ${greeting()}"),
                     Text(
                       _username.toString(),
@@ -133,7 +160,8 @@ class _HomePageState extends State<HomePage> {
                 child: Card(
                   color: primaryColor,
                   child: StreamBuilder<List<Map<String, dynamic>>>(
-                    stream: CashWalletHeadJournalStream().cashWalletHeadJournalStream,
+                    stream: CashWalletHeadJournalStream()
+                        .cashWalletHeadJournalStream,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator();
@@ -204,61 +232,65 @@ class _HomePageState extends State<HomePage> {
                 return Text('Error: ${snapshot.error}');
               } else {
                 final categoriesjournals = snapshot.data ?? [];
-                return Container(
-                  height: 60,
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: categoriesjournals.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ChoiceChip(
-                            label: const Text("All"),
-                            selected: _choiceIndex == index,
-                            selectedColor: chipSelectedColor,
-                            onSelected: (bool selected) async {
-                              final data = await SQLHelper.getItems(
-                                  switchArg: "all", tableName: "transactions");
-                              setState(() {
-                                _choiceIndex = selected ? index : 0;
-                                // _journals = data;
-                                // TODO add update of value in choice chip
-                              });
-                            },
-                            backgroundColor: chipBackgroundColor,
-                            labelStyle: chipTextStyle,
-                          ),
-                        );
-                      } else {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ChoiceChip(
-                            label:
-                                Text(categoriesjournals[index - 1]['category']),
-                            selected: _choiceIndex == index,
-                            selectedColor: chipSelectedColor,
-                            onSelected: (bool selected) async {
-                              final data = await SQLHelper.getItems(
-                                  switchArg: "filterByCategories",
-                                  tableName: "transactions",
-                                  categoriesclm: categoriesjournals[index - 1]
-                                      ["category"]);
-                              setState(() {
-                                _choiceIndex = selected ? index : 0;
-                                // _journals = data;
-                                // TODO add update of value in choice chip
-                              });
-                            },
-                            backgroundColor: chipBackgroundColor,
-                            labelStyle: chipTextStyle,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                );
+                return (categoriesjournals.isNotEmpty)
+                    ? Container(
+                        height: 60,
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categoriesjournals.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ChoiceChip(
+                                  label: const Text("All"),
+                                  selected: _choiceIndex == index,
+                                  selectedColor: chipSelectedColor,
+                                  onSelected: (bool selected) async {
+                                    final data = await SQLHelper.getItems(
+                                        switchArg: "all",
+                                        tableName: "transactions");
+                                    setState(() {
+                                      _choiceIndex = selected ? index : 0;
+                                      // _journals = data;
+                                      // TODO add update of value in choice chip
+                                    });
+                                  },
+                                  backgroundColor: chipBackgroundColor,
+                                  labelStyle: chipTextStyle,
+                                ),
+                              );
+                            } else {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ChoiceChip(
+                                  label: Text(categoriesjournals[index - 1]
+                                      ['category']),
+                                  selected: _choiceIndex == index,
+                                  selectedColor: chipSelectedColor,
+                                  onSelected: (bool selected) async {
+                                    final data = await SQLHelper.getItems(
+                                        switchArg: "filterByCategories",
+                                        tableName: "transactions",
+                                        categoriesclm:
+                                            categoriesjournals[index - 1]
+                                                ["category"]);
+                                    setState(() {
+                                      _choiceIndex = selected ? index : 0;
+                                      // _journals = data;
+                                      // TODO add update of value in choice chip
+                                    });
+                                  },
+                                  backgroundColor: chipBackgroundColor,
+                                  labelStyle: chipTextStyle,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink();
               }
             },
           ),

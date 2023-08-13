@@ -57,9 +57,9 @@ class _TransactionFormState extends State<TransactionForm> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       // ... existing code ...
-      (_isEditable) ? await _updateItem() : await _addItem();
+      (_isEditable) ? _updateItem() : _addItem();
 
-      loadData4NavPages();
+      loadData4NavPagesClearFun();
 
       // Close the screen
       Navigator.of(context).pop();
@@ -111,7 +111,7 @@ class _TransactionFormState extends State<TransactionForm> {
       await SQLHelper.deleteItem(
           transactionId!, _amountController, _walletController);
 
-      loadData4NavPages();
+      loadData4NavPagesClearFun();
 
       // close the screen
       Navigator.of(context).pop();

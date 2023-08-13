@@ -27,13 +27,13 @@ A new Flutter project.
 - [x] fix expense edit negative amount
 - [x] setup stream builder 
 - [x] add mobile platform validation for screen
+- [x] update the username on initstate
+- [x] infinite scroll pagination, lazy loading
 
 ### Working on it
-- [ ] update the username on initstate
 - [ ] add icons selection for transaction
 - [ ] complete transaction.dart for date time selection with db table update
 - [ ] update the sql_helper according to the datetime select code
-- [ ] infinite scroll pagination, lazy loading
 
 ### TODOs
 - [ ] show distinct category for as menu item text box in new transaction screen

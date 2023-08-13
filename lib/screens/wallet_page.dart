@@ -13,27 +13,14 @@ class WalletDetailedPage extends StatefulWidget {
 
 class _WalletDetailedPageState extends State<WalletDetailedPage> {
   late String walletHead;
-  List<Map<String, dynamic>> _journals = [];
   final ScrollController _scrollController = ScrollController();
   int limitN = 5;
   int offsetN = 10;
-
-  void _refreshJournals() async {
-    final data = await SQLHelper.getItems(
-        switchArg: "filterByWallet",
-        tableName: "transactions",
-        walletclm: walletHead);
-
-    setState(() {
-      _journals = data;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
     walletHead = widget.walletHead;
-    _refreshJournals();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -45,16 +32,18 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
 
   void _loadMoreData() async {
     final newData = await SQLHelper.getItems(
-      switchArg: "limitAll",
+      switchArg: "limit",
       tableName: "transactions",
       limit: limitN,
       offset: offsetN,
+      walletclm: walletHead,
     );
 
-    setState(() {
-      _journals = [..._journals, ...newData];
-      offsetN += limitN;
-    });
+    // Update the stream with the new data
+    WalletJournalStream().updateJournalData([...newData]);
+
+    // Increment the offset
+    offsetN += limitN;
   }
 
   @override

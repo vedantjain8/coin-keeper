@@ -1,6 +1,11 @@
 import 'package:coinkeeper/provider/journal_stream.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 
+void loadData4NavPagesClearFun(){
+  JournalStream().clearJournalData();
+  loadData4NavPages();
+}
+
 void loadData4NavPages() async {
   // home page
   final journalData = await SQLHelper.getItems(
@@ -41,22 +46,26 @@ void loadData4NavPages() async {
   );
 
   // Update the journal data through the stream
-  CategoryJournalStream().updateJournalData(categoriesData);
   JournalStream().updateJournalData(journalData);
+  CategoryJournalStream().updateJournalData(categoriesData);
   CashWalletHeadJournalStream().updateJournalData(cashWalletData);
+
   WalletPageJournalStream().updateJournalData(walletData);
+  
   CategoryExpense4ReportJournalStream()
       .updateJournalData(categoriesdata4expense);
   CategoryIncome4ReportJournalStream().updateJournalData(categoriesdata4income);
   CategoryWallet4ReportJournalStream().updateJournalData(categoriesdata4wallet);
 }
 
-void loadData4Wallet_page(String walletHead) async {
-  final walletJournalData = await SQLHelper.getItems(
-    switchArg: "filterByWallet",
-    tableName: "transactions",
-    walletclm: walletHead,
-  );
+void loadData4WalletPage(String walletHead) async {
+  final newData = await SQLHelper.getItems(
+      switchArg: "limit",
+      tableName: "transactions",
+      limit: 10,
+      walletclm: walletHead,
+    );
 
-  WalletJournalStream().updateJournalData(walletJournalData);
+  WalletJournalStream().clearJournalData();
+  WalletJournalStream().updateJournalData(newData);
 }

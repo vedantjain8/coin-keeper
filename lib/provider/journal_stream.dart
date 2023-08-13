@@ -1,6 +1,7 @@
 import 'dart:async';
 
 class JournalStream {
+  List<Map<String, dynamic>> currentData = [];
   static final JournalStream _instance = JournalStream._internal();
 
   factory JournalStream() => _instance;
@@ -14,7 +15,12 @@ class JournalStream {
       _journalController.stream;
 
   void updateJournalData(List<Map<String, dynamic>> newData) async {
-    _journalController.sink.add(newData);
+    currentData.addAll(newData);
+    _journalController.sink.add(currentData);
+  }
+
+  void clearJournalData() {
+    currentData.clear();
   }
 
   void dispose() {
@@ -167,6 +173,7 @@ class CategoryWallet4ReportJournalStream {
 }
 
 class WalletJournalStream {
+  List<Map<String, dynamic>> currentData = [];
   static final WalletJournalStream _instance = WalletJournalStream._internal();
 
   factory WalletJournalStream() => _instance;
@@ -180,10 +187,16 @@ class WalletJournalStream {
       _walletJournalController.stream;
 
   void updateJournalData(List<Map<String, dynamic>> newData) async {
-    _walletJournalController.sink.add(newData);
+    currentData.addAll(newData);
+    _walletJournalController.sink.add(currentData);
+  }
+
+  void clearJournalData() {
+    currentData.clear();
   }
 
   void dispose() {
     _walletJournalController.close();
+    currentData.clear();
   }
 }

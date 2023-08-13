@@ -43,7 +43,7 @@ class _WalletPageState extends State<WalletPage> {
                       onTap: () {
                         final walletHead = walletjournals[index]['title'];
 
-                        loadData4Wallet_page(walletHead);
+                        loadData4WalletPage(walletHead);
 
                         Navigator.of(context).push(
                           MaterialPageRoute(
