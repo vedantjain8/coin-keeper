@@ -68,7 +68,8 @@ class SQLHelper {
         }
         return db.rawQuery('SELECT * FROM ($tableName) order by id desc');
       case "categories":
-        return db.rawQuery('SELECT distinct(category) FROM ($tableName)');
+        return db.rawQuery(
+            'SELECT distinct(category) FROM ($tableName) order by category');
       // Filters
       case "filterById":
         return db.rawQuery(

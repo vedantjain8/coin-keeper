@@ -1,4 +1,5 @@
 import 'package:coinkeeper/functions/convert.dart';
+import 'package:coinkeeper/provider/journal_stream.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:coinkeeper/widgets/report_pie.dart';
 import 'package:flutter/material.dart';
@@ -65,20 +66,62 @@ class _ReportsPageState extends State<ReportsPage> {
                     height: 40,
                   ),
                   const Text("Expense Chart"),
-                  returnReportPieChart(
-                      journals: _expensesjournals, centerText: "Expense Chart"),
+                  StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: CategoryExpense4ReportJournalStream()
+                        .categoryExpense4ReportJournalStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        final expensesjournals = snapshot.data ?? [];
+                        return returnReportPieChart(
+                            journals: listToMap(expensesjournals),
+                            centerText: "Expense Chart");
+                      }
+                    },
+                  ),
                   const SizedBox(
                     height: 40,
                   ),
                   const Text("Income Chart"),
-                  returnReportPieChart(
-                      journals: _incomejournals, centerText: "Income Chart"),
+                  StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: CategoryIncome4ReportJournalStream()
+                        .categoryIncome4ReportJournalStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        final incomejournals = snapshot.data ?? [];
+                        return returnReportPieChart(
+                            journals: listToMap(incomejournals),
+                            centerText: "Income Chart");
+                      }
+                    },
+                  ),
                   const SizedBox(
                     height: 40,
                   ),
                   const Text("wallet Chart"),
-                  returnReportPieChart(
-                      journals: _walletjournals, centerText: "Wallet Chart"),
+                  StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: CategoryWallet4ReportJournalStream()
+                        .categoryWallet4ReportJournalStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        final walletjournals = snapshot.data ?? [];
+                        return returnReportPieChart(
+                            journals: listToMap(walletjournals),
+                            centerText: "Wallet Chart");
+                      }
+                    },
+                  ),
                 ],
               ),
             ),

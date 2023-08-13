@@ -7,6 +7,8 @@ import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:coinkeeper/theme/color.dart';
 import 'package:coinkeeper/data/consts.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:coinkeeper/provider/journal_stream.dart';
+import 'package:coinkeeper/provider/reload_data.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,10 +19,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // variables
-  List<Map<String, dynamic>> _journals = [],
-      _walletjournals = [],
-      _categoriesjournals = [];
-  bool _isLoading = true;
   int _choiceIndex = 0;
 
   final ScrollController _scrollController = ScrollController();
@@ -29,58 +27,39 @@ class _HomePageState extends State<HomePage> {
 
   String? _username;
 
-  void _refreshJournals() async {
-    final data = await SQLHelper.getItems(
-        switchArg: "all", tableName: "transactions", limit: 10);
-    final cashWalletdata = await SQLHelper.getItems(
-        switchArg: "filterByTitle", tableName: "wallets", titleclm: "cash");
-    final categoriesdata = await SQLHelper.getItems(
-        switchArg: "categories", tableName: "transactions");
-
-    setState(() {
-      _isLoading = false;
-      _journals = data;
-      _walletjournals = cashWalletdata;
-      _categoriesjournals = categoriesdata;
-      _choiceIndex = 0;
-      offsetN = 10;
-    });
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   void initState() {
-    super.initState();
     _updateValues();
-    _refreshJournals(); // Loading the diary when the app starts
+    loadData4NavPages();
+    super.initState();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _loadMoreData();
+        // _loadMoreData();
+        // TODO add load more data here
       }
     });
   }
 
-  void _loadMoreData() async {
-    final newData = await SQLHelper.getItems(
-      switchArg: "limitAll",
-      tableName: "transactions",
-      limit: limitN,
-      offset: offsetN,
-    );
+  // void _loadMoreData() async {
+  //   final newData = await SQLHelper.getItems(
+  //     switchArg: "limitAll",
+  //     tableName: "transactions",
+  //     limit: limitN,
+  //     offset: offsetN,
+  //   );
 
-    setState(() {
-      _journals = [..._journals, ...newData];
-      offsetN += limitN;
-    });
-  }
-
-  Future<void> refreshData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    _refreshJournals();
-  }
+  //   setState(() {
+  //     _journals = [..._journals, ...newData];
+  //     offsetN += limitN;
+  //   });
+  // }
 
   String greeting() {
     var hour = DateTime.now().hour;
@@ -110,15 +89,14 @@ class _HomePageState extends State<HomePage> {
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => TransactionForm(
-              // refreshData: refreshData
-              ),
+                // refreshData: refreshData
+                ),
           ),
         ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ElevatedButton(onPressed: refreshData, child: Text("refresh")),
           Column(
             children: [
               Padding(
@@ -154,20 +132,25 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: Card(
                   color: primaryColor,
-                  child: _isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : Container(
+                  child: StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: CashWalletHeadJournalStream().cashWalletHeadJournalStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        final walletjournals = snapshot.data ?? [];
+                        return Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (_walletjournals.isNotEmpty)
+                              if (walletjournals.isNotEmpty)
                                 Text(
                                   (formatCurrency
-                                      .format(_walletjournals[0]['amount'])),
+                                      .format(walletjournals[0]['amount'])),
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineMedium
@@ -184,12 +167,12 @@ class _HomePageState extends State<HomePage> {
                                 "Balance",
                               ),
                               const SizedBox(height: 50),
-                              if (_walletjournals.isNotEmpty)
+                              if (walletjournals.isNotEmpty)
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      _walletjournals[0]["title"].toString(),
+                                      walletjournals[0]["title"].toString(),
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge
@@ -204,19 +187,29 @@ class _HomePageState extends State<HomePage> {
                                 )
                             ],
                           ),
-                        ),
+                        );
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
           ),
-          (_categoriesjournals.isEmpty)
-              ? Container()
-              : Container(
+          StreamBuilder<List<Map<String, dynamic>>>(
+            stream: CategoryJournalStream().categoryjournalStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                final categoriesjournals = snapshot.data ?? [];
+                return Container(
                   height: 60,
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: _categoriesjournals.length + 1,
+                    itemCount: categoriesjournals.length + 1,
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return Padding(
@@ -230,7 +223,8 @@ class _HomePageState extends State<HomePage> {
                                   switchArg: "all", tableName: "transactions");
                               setState(() {
                                 _choiceIndex = selected ? index : 0;
-                                _journals = data;
+                                // _journals = data;
+                                // TODO add update of value in choice chip
                               });
                             },
                             backgroundColor: chipBackgroundColor,
@@ -241,19 +235,20 @@ class _HomePageState extends State<HomePage> {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ChoiceChip(
-                            label: Text(
-                                _categoriesjournals[index - 1]['category']),
+                            label:
+                                Text(categoriesjournals[index - 1]['category']),
                             selected: _choiceIndex == index,
                             selectedColor: chipSelectedColor,
                             onSelected: (bool selected) async {
                               final data = await SQLHelper.getItems(
                                   switchArg: "filterByCategories",
                                   tableName: "transactions",
-                                  categoriesclm: _categoriesjournals[index - 1]
+                                  categoriesclm: categoriesjournals[index - 1]
                                       ["category"]);
                               setState(() {
                                 _choiceIndex = selected ? index : 0;
-                                _journals = data;
+                                // _journals = data;
+                                // TODO add update of value in choice chip
                               });
                             },
                             backgroundColor: chipBackgroundColor,
@@ -263,15 +258,28 @@ class _HomePageState extends State<HomePage> {
                       }
                     },
                   ),
-                ),
-          Expanded(
-            child: listViewBuilderWidget(
-              journals: _journals,
-              isLoading: _isLoading,
-              // refreshData: refreshData,
-              scrollController: _scrollController,
-            ),
+                );
+              }
+            },
           ),
+          Expanded(
+            child: StreamBuilder<List<Map<String, dynamic>>>(
+              stream: JournalStream().journalStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  final journals = snapshot.data ?? [];
+                  return listViewBuilderWidget(
+                    journals: journals,
+                    scrollController: _scrollController,
+                  );
+                }
+              },
+            ),
+          )
         ],
       ),
     );

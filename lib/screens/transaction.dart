@@ -1,3 +1,4 @@
+import 'package:coinkeeper/provider/reload_data.dart';
 import 'package:coinkeeper/theme/color.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
@@ -53,14 +54,14 @@ class _TransactionFormState extends State<TransactionForm> {
     });
   }
 
-  void _submitForm() async {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      // submit sql insert query
+      // ... existing code ...
       (_isEditable) ? await _updateItem() : await _addItem();
 
-      // widget.refreshData();
+      loadData4NavPages();
 
-      // close the screen
+      // Close the screen
       Navigator.of(context).pop();
 
       // Clear form fields
@@ -109,7 +110,8 @@ class _TransactionFormState extends State<TransactionForm> {
     try {
       await SQLHelper.deleteItem(
           transactionId!, _amountController, _walletController);
-      // widget.refreshData();
+
+      loadData4NavPages();
 
       // close the screen
       Navigator.of(context).pop();
@@ -119,6 +121,7 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   // date time widget
+  // TODO add choose date and time button
   Future<void> chooseDate(BuildContext context) async {
     DateTime initialDate = _datetime;
     final DateTime? picked = await showDatePicker(
@@ -224,297 +227,131 @@ class _TransactionFormState extends State<TransactionForm> {
         ],
       ),
       body: SingleChildScrollView(
-          child:
-              // (_isEditable)
-              //     ?
-              (_isLoading)
-                  ? const Center(child: CircularProgressIndicator())
-                  : Container(
-                      padding: const EdgeInsets.only(
-                        top: 15,
-                        left: 15,
-                        right: 15,
-                      ),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              initialValue: _transactionItem['title'],
-                              onChanged: (value) {
-                                setState(() {
-                                  _titleController = value.trim();
-                                });
-                              },
-                              decoration: const InputDecoration(
-                                labelText: 'Title',
-                              ),
-                            ),
-                            TextFormField(
-                              initialValue: _transactionItem['description'],
-                              onChanged: (value) {
-                                setState(() {
-                                  _descriptionController = value.trim();
-                                });
-                              },
-                              decoration: const InputDecoration(
-                                labelText: 'Description',
-                              ),
-                            ),
-                            ListTile(
-                              title: const Text('Income'),
-                              leading: Radio(
-                                value: 'income',
-                                groupValue: _typeController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _typeController = value.toString();
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            ListTile(
-                              title: const Text('Expense'),
-                              leading: Radio(
-                                value: 'expense',
-                                groupValue: _typeController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _typeController = value.toString();
-                                  });
-                                },
-                              ),
-                            ),
-                            TextFormField(
-                              initialValue:
-                                  (_isEditable) ? _transactionItem['amount'].toString() : "",
-                              validator: (value) {
-                                if (value == null ||
-                                    value.isEmpty ||
-                                    double.tryParse(value) == 0.0) {
-                                  return 'Please enter amount';
-                                }
-
-                                double parsedAmount =
-                                    double.tryParse(value) ?? 0.0;
-
-                                if (_typeController.toString().toLowerCase() ==
-                                    "income") {
-                                  if (parsedAmount < 0) {
-                                    return "Please enter a valid positive amount";
-                                  }
-                                } else if (_typeController
-                                        .toString()
-                                        .toLowerCase() ==
-                                    "expense") {
-                                  if (parsedAmount >= 0) {
-                                    return "Please enter a valid negative amount";
-                                  }
-                                }
-
-                                return null;
-                              },
-                              onChanged: (value) {
-                                setState(() {
-                                  _amountController = double.parse(value);
-                                });
-                              },
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\-?\d{0,10}\.?\d{0,2}'))
-                              ],
-                              decoration: const InputDecoration(
-                                labelText: 'Amount',
-                              ),
-                            ),
-                            TextFormField(
-                              initialValue: _transactionItem['wallet'],
-                              onChanged: (value) {
-                                setState(() {
-                                  _walletController = value.trim();
-                                });
-                              },
-                              decoration: const InputDecoration(
-                                labelText: 'Wallet',
-                              ),
-                            ),
-                            TextFormField(
-                              initialValue: _transactionItem['category'],
-                              onChanged: (value) {
-                                setState(() {
-                                  _categoryController = value.trim();
-                                });
-                              },
-                              decoration: const InputDecoration(
-                                labelText: 'Category',
-                              ),
-                            ),
-                          ],
+        child: (_isLoading)
+            ? const Center(child: CircularProgressIndicator())
+            : Container(
+                padding: const EdgeInsets.only(
+                  top: 15,
+                  left: 15,
+                  right: 15,
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        initialValue: _transactionItem['title'],
+                        onChanged: (value) {
+                          setState(() {
+                            _titleController = value.trim();
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Title',
                         ),
                       ),
-                    )
-          // : // new entry from below
-          // Container(
-          //     padding: const EdgeInsets.only(
-          //       top: 15,
-          //       left: 15,
-          //       right: 15,
-          //     ),
-          //     child: Form(
-          //       key: _formKey,
-          //       child: Column(
-          //         children: [
-          //           TextFormField(
-          //             onChanged: (value) {
-          //               setState(() {
-          //                 _titleController = value.trim();
-          //               });
-          //             },
-          //             decoration: const InputDecoration(
-          //               labelText: 'Title',
-          //             ),
-          //           ),
-          //           TextFormField(
-          //             onChanged: (value) {
-          //               setState(() {
-          //                 _descriptionController = value.trim();
-          //               });
-          //             },
-          //             decoration: const InputDecoration(
-          //               labelText: 'Description',
-          //             ),
-          //           ),
-          //           Row(
-          //             crossAxisAlignment: CrossAxisAlignment.center,
-          //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //             children: [
-          //               Row(
-          //                 children: [
-          //                   Radio(
-          //                     value: 'income',
-          //                     groupValue: _typeController,
-          //                     onChanged: (value) {
-          //                       setState(() {
-          //                         _typeController = value.toString();
-          //                       });
-          //                     },
-          //                   ),
-          //                   const Text('Income'),
-          //                 ],
-          //               ),
-          //               Row(
-          //                 children: [
-          //                   Radio(
-          //                     value: 'expense',
-          //                     groupValue: _typeController,
-          //                     onChanged: (value) {
-          //                       setState(() {
-          //                         _typeController = value.toString();
-          //                       });
-          //                     },
-          //                   ),
-          //                   const Text('Expense'),
-          //                 ],
-          //               )
-          //             ],
-          //           ),
-          //           TextFormField(
-          //             validator: (value) {
-          //               if (value == null ||
-          //                   value.isEmpty ||
-          //                   double.tryParse(value) == 0.0) {
-          //                 return 'Please enter valid amount';
-          //               }
-          //               return null;
-          //             },
-          //             onChanged: (value) {
-          //               setState(() {
-          //                 _amountController = double.tryParse(value) ?? 0.0;
-          //               });
-          //             },
-          //             keyboardType: const TextInputType.numberWithOptions(
-          //               decimal: true,
-          //             ),
-          //             inputFormatters: [
-          //               FilteringTextInputFormatter.allow(
-          //                   RegExp(r'^\d+\.?\d{0,1}'))
-          //             ],
-          //             decoration: const InputDecoration(
-          //               labelText: 'Amount',
-          //             ),
-          //           ),
-          //           TextFormField(
-          //             onChanged: (value) {
-          //               setState(() {
-          //                 _walletController = value.trim();
-          //               });
-          //             },
-          //             decoration: const InputDecoration(
-          //               labelText: 'Wallet',
-          //             ),
-          //           ),
-          //           TextFormField(
-          //             onChanged: (value) {
-          //               setState(() {
-          //                 _categoryController = value.trim();
-          //               });
-          //             },
-          //             decoration: const InputDecoration(
-          //               labelText: 'Category',
-          //             ),
-          //           ),
-          //           const SizedBox(
-          //             height: 20,
-          //           ),
-          //           Row(
-          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //             children: [
-          //               const Text("Select Date Time: "),
-          //               InkWell(
-          //                   onTap: () {
-          //                     chooseDate(context);
-          //                   },
-          //                   child: Wrap(
-          //                     spacing: 10,
-          //                     children: [
-          //                       Icon(
-          //                         Icons.calendar_today,
-          //                         size: 18,
-          //                         color:
-          //                             Theme.of(context).colorScheme.primary,
-          //                       ),
-          //                       Text(DateFormat("dd/MM/yyyy")
-          //                           .format(_datetime))
-          //                     ],
-          //                   )),
-          //               InkWell(
-          //                   onTap: () {
-          //                     chooseTime(context);
-          //                   },
-          //                   child: Wrap(
-          //                     spacing: 10,
-          //                     children: [
-          //                       Icon(
-          //                         Icons.watch_later_outlined,
-          //                         size: 18,
-          //                         color:
-          //                             Theme.of(context).colorScheme.primary,
-          //                       ),
-          //                       Text(DateFormat("hh:mm a").format(_datetime))
-          //                     ],
-          //                   )),
-          //             ],
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          ),
+                      TextFormField(
+                        initialValue: _transactionItem['description'],
+                        onChanged: (value) {
+                          setState(() {
+                            _descriptionController = value.trim();
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Description',
+                        ),
+                      ),
+                      ListTile(
+                        title: const Text('Income'),
+                        leading: Radio(
+                          value: 'income',
+                          groupValue: _typeController,
+                          onChanged: (value) {
+                            setState(() {
+                              _typeController = value.toString();
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      ListTile(
+                        title: const Text('Expense'),
+                        leading: Radio(
+                          value: 'expense',
+                          groupValue: _typeController,
+                          onChanged: (value) {
+                            setState(() {
+                              _typeController = value.toString();
+                            });
+                          },
+                        ),
+                      ),
+                      TextFormField(
+                        initialValue: (_isEditable)
+                            ? _transactionItem['amount'].toString()
+                            : "",
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter amount';
+                          }
+
+                          double parsedAmount = double.tryParse(value) ?? 0.0;
+
+                          if (_typeController.toLowerCase() == "income") {
+                            if (parsedAmount < 0) {
+                              return "Please enter a valid positive amount";
+                            }
+                          } else if (_typeController.toLowerCase() ==
+                              "expense") {
+                            if (parsedAmount >= 0) {
+                              return "Please enter a valid negative amount";
+                            }
+                          }
+
+                          return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _amountController = double.tryParse(value) ?? 0.0;
+                          });
+                        },
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\-?\d{0,10}(\.\d{0,2})?$')),
+                        ],
+                        decoration: const InputDecoration(
+                          labelText: 'Amount',
+                        ),
+                      ),
+                      TextFormField(
+                        initialValue: _transactionItem['wallet'],
+                        onChanged: (value) {
+                          setState(() {
+                            _walletController = value.trim();
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Wallet',
+                        ),
+                      ),
+                      TextFormField(
+                        initialValue: _transactionItem['category'],
+                        onChanged: (value) {
+                          setState(() {
+                            _categoryController = value.trim();
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Category',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+      ),
     );
   }
 }

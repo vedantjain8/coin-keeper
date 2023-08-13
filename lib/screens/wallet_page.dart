@@ -1,3 +1,4 @@
+import 'package:coinkeeper/provider/journal_stream.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:coinkeeper/widgets/list_view_builder_widget.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ class WalletDetailedPage extends StatefulWidget {
 class _WalletDetailedPageState extends State<WalletDetailedPage> {
   late String walletHead;
   List<Map<String, dynamic>> _journals = [];
-  bool _isLoading = true;
   final ScrollController _scrollController = ScrollController();
   int limitN = 5;
   int offsetN = 10;
@@ -26,7 +26,6 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
 
     setState(() {
       _journals = data;
-      _isLoading = false;
     });
   }
 
@@ -58,28 +57,28 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
     });
   }
 
-  Future<void> refreshData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    _refreshJournals();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("$walletHead Transaction"),
       ),
-      body: RefreshIndicator(
-        onRefresh: refreshData,
-        child: Container(
-            child: listViewBuilderWidget(
-          journals: _journals,
-          isLoading: _isLoading,
-          // refreshData: refreshData,
-          scrollController: _scrollController,
-        )),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: WalletJournalStream().walletJournalStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            final data = snapshot.data ?? [];
+            return listViewBuilderWidget(
+              journals: data,
+              // refreshData: refreshData,
+              scrollController: _scrollController,
+            );
+          }
+        },
       ),
     );
   }
