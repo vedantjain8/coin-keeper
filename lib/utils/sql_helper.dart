@@ -13,7 +13,7 @@ class SQLHelper {
           wallet TEXT NOT NULL, 
           type TEXT NOT NULL,
           category TEXT,
-          createdAt TIMESTAMP NOT NULL
+          createdAt TEXT NOT NULL
           )""");
 
     await database.execute("""CREATE TABLE IF NOT EXISTS wallets(
@@ -105,8 +105,15 @@ class SQLHelper {
   }
 
   // create record
-  static Future<int> createItem(String title, String? description,
-      double amount, String? wallet, String type, String? category) async {
+  static Future<int> createItem(
+    String title,
+    String? description,
+    double amount,
+    String? wallet,
+    String type,
+    String? category,
+    String dateTime,
+  ) async {
     final db = await SQLHelper.db();
 
     wallet = (wallet ?? "cash");
@@ -118,7 +125,7 @@ class SQLHelper {
       'wallet': wallet,
       'type': type,
       'category': category,
-      "createdAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())
+      "createdAt": dateTime
     };
     final id = await db.insert(
       'transactions',
@@ -210,14 +217,16 @@ class SQLHelper {
 
   // update item
   static Future<int> updateItem(
-      int id,
-      String title,
-      String? description,
-      double amount,
-      String? wallet,
-      String type,
-      String? category,
-      double oldTransactionAmount) async {
+    int id,
+    String title,
+    String? description,
+    double amount,
+    String? wallet,
+    String type,
+    String? category,
+    double oldTransactionAmount,
+    String dateTime,
+  ) async {
     final db = await SQLHelper.db();
 
     final data = {
@@ -227,7 +236,7 @@ class SQLHelper {
       'wallet': wallet,
       'type': type,
       'category': category,
-      "createdAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())
+      "createdAt": dateTime
     };
 
     final result =

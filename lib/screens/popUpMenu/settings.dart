@@ -1,3 +1,4 @@
+import 'package:coinkeeper/provider/reload_data.dart';
 import 'package:coinkeeper/settings/sharedpreferences.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
@@ -153,6 +154,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               TextButton(
                                 onPressed: () {
                                   _doomTable();
+                                  loadData4NavPagesClearFun();
                                   Navigator.of(context).pop();
                                 },
                                 child: const Text(

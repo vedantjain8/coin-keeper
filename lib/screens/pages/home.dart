@@ -81,27 +81,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  int i = 0;
-  Future<void> testingDta() async {
-    for (i = 0; i < 30; i++) {
-        const Duration(seconds: 25);
-      try {
-        await SQLHelper.createItem(
-          i.toString(),
-          "",
-          10.0,
-          "cash",
-          "income",
-          "",
-        );
-        loadData4NavPages();
-        print(i);
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +91,7 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => TransactionForm(
+            builder: (context) => const TransactionForm(
                 // refreshData: refreshData
                 ),
           ),
@@ -128,9 +107,6 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ElevatedButton(
-                        onPressed: testingDta,
-                        child: const Text("Test data add")),
                     Text("Hi! ${greeting()}"),
                     Text(
                       _username.toString(),
@@ -149,10 +125,14 @@ class _HomePageState extends State<HomePage> {
               child: InkWell(
                 splashColor: onClickColor,
                 onTap: () {
+                  const walletHead = "cash";
+
+                  loadData4WalletPage(walletHead);
+
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const WalletDetailedPage(
-                        walletHead: "cash",
+                        walletHead: walletHead,
                       ),
                     ),
                   );
@@ -223,77 +203,77 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          StreamBuilder<List<Map<String, dynamic>>>(
-            stream: CategoryJournalStream().categoryjournalStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                final categoriesjournals = snapshot.data ?? [];
-                return (categoriesjournals.isNotEmpty)
-                    ? Container(
-                        height: 60,
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: categoriesjournals.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ChoiceChip(
-                                  label: const Text("All"),
-                                  selected: _choiceIndex == index,
-                                  selectedColor: chipSelectedColor,
-                                  onSelected: (bool selected) async {
-                                    final data = await SQLHelper.getItems(
-                                        switchArg: "all",
-                                        tableName: "transactions");
-                                    setState(() {
-                                      _choiceIndex = selected ? index : 0;
-                                      // _journals = data;
-                                      // TODO add update of value in choice chip
-                                    });
-                                  },
-                                  backgroundColor: chipBackgroundColor,
-                                  labelStyle: chipTextStyle,
-                                ),
-                              );
-                            } else {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ChoiceChip(
-                                  label: Text(categoriesjournals[index - 1]
-                                      ['category']),
-                                  selected: _choiceIndex == index,
-                                  selectedColor: chipSelectedColor,
-                                  onSelected: (bool selected) async {
-                                    final data = await SQLHelper.getItems(
-                                        switchArg: "filterByCategories",
-                                        tableName: "transactions",
-                                        categoriesclm:
-                                            categoriesjournals[index - 1]
-                                                ["category"]);
-                                    setState(() {
-                                      _choiceIndex = selected ? index : 0;
-                                      // _journals = data;
-                                      // TODO add update of value in choice chip
-                                    });
-                                  },
-                                  backgroundColor: chipBackgroundColor,
-                                  labelStyle: chipTextStyle,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      )
-                    : const SizedBox.shrink();
-              }
-            },
-          ),
+          // StreamBuilder<List<Map<String, dynamic>>>(
+          //   stream: CategoryJournalStream().categoryjournalStream,
+          //   builder: (context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return const CircularProgressIndicator();
+          //     } else if (snapshot.hasError) {
+          //       return Text('Error: ${snapshot.error}');
+          //     } else {
+          //       final categoriesjournals = snapshot.data ?? [];
+          //       return (categoriesjournals.isNotEmpty)
+          //           ? Container(
+          //               height: 60,
+          //               padding: const EdgeInsets.only(left: 10, right: 10),
+          //               child: ListView.builder(
+          //                 scrollDirection: Axis.horizontal,
+          //                 itemCount: categoriesjournals.length + 1,
+          //                 itemBuilder: (context, index) {
+          //                   if (index == 0) {
+          //                     return Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: ChoiceChip(
+          //                         label: const Text("All"),
+          //                         selected: _choiceIndex == index,
+          //                         selectedColor: chipSelectedColor,
+          //                         onSelected: (bool selected) async {
+          //                           final data = await SQLHelper.getItems(
+          //                               switchArg: "all",
+          //                               tableName: "transactions");
+          //                           setState(() {
+          //                             _choiceIndex = selected ? index : 0;
+          //                             // _journals = data;
+          //                             // TODO add update of value in choice chip
+          //                           });
+          //                         },
+          //                         backgroundColor: chipBackgroundColor,
+          //                         labelStyle: chipTextStyle,
+          //                       ),
+          //                     );
+          //                   } else {
+          //                     return Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: ChoiceChip(
+          //                         label: Text(categoriesjournals[index - 1]
+          //                             ['category']),
+          //                         selected: _choiceIndex == index,
+          //                         selectedColor: chipSelectedColor,
+          //                         onSelected: (bool selected) async {
+          //                           final data = await SQLHelper.getItems(
+          //                               switchArg: "filterByCategories",
+          //                               tableName: "transactions",
+          //                               categoriesclm:
+          //                                   categoriesjournals[index - 1]
+          //                                       ["category"]);
+          //                           setState(() {
+          //                             _choiceIndex = selected ? index : 0;
+          //                             // _journals = data;
+          //                             // TODO add update of value in choice chip
+          //                           });
+          //                         },
+          //                         backgroundColor: chipBackgroundColor,
+          //                         labelStyle: chipTextStyle,
+          //                       ),
+          //                     );
+          //                   }
+          //                 },
+          //               ),
+          //             )
+          //           : const SizedBox.shrink();
+          //     }
+          //   },
+          // ),
           Expanded(
             child: StreamBuilder<List<Map<String, dynamic>>>(
               stream: JournalStream().journalStream,

@@ -1,7 +1,7 @@
 import 'package:coinkeeper/provider/journal_stream.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 
-void loadData4NavPagesClearFun(){
+void loadData4NavPagesClearFun() {
   JournalStream().clearJournalData();
   loadData4NavPages();
 }
@@ -13,10 +13,10 @@ void loadData4NavPages() async {
     tableName: "transactions",
     limit: 10,
   );
-  final categoriesData = await SQLHelper.getItems(
-    switchArg: "categories",
-    tableName: "transactions",
-  );
+  // final categoriesData = await SQLHelper.getItems(
+  //   switchArg: "categories",
+  //   tableName: "transactions",
+  // );
   final cashWalletData = await SQLHelper.getItems(
     switchArg: "filterByTitle",
     tableName: "wallets",
@@ -47,11 +47,11 @@ void loadData4NavPages() async {
 
   // Update the journal data through the stream
   JournalStream().updateJournalData(journalData);
-  CategoryJournalStream().updateJournalData(categoriesData);
+  // CategoryJournalStream().updateJournalData(categoriesData);
   CashWalletHeadJournalStream().updateJournalData(cashWalletData);
 
   WalletPageJournalStream().updateJournalData(walletData);
-  
+
   CategoryExpense4ReportJournalStream()
       .updateJournalData(categoriesdata4expense);
   CategoryIncome4ReportJournalStream().updateJournalData(categoriesdata4income);
@@ -60,11 +60,11 @@ void loadData4NavPages() async {
 
 void loadData4WalletPage(String walletHead) async {
   final newData = await SQLHelper.getItems(
-      switchArg: "limit",
-      tableName: "transactions",
-      limit: 10,
-      walletclm: walletHead,
-    );
+    switchArg: "limit",
+    tableName: "transactions",
+    limit: 10,
+    walletclm: walletHead,
+  );
 
   WalletJournalStream().clearJournalData();
   WalletJournalStream().updateJournalData(newData);

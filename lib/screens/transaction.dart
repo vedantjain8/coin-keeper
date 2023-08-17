@@ -3,6 +3,7 @@ import 'package:coinkeeper/theme/color.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class TransactionForm extends StatefulWidget {
   // final void Function() refreshData;
@@ -35,6 +36,20 @@ class _TransactionFormState extends State<TransactionForm> {
   double _oldTransactionAmount = 0.0;
   DateTime _datetime = DateTime.now();
 
+  DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+
+  // Load combined date and time from transaction item
+  void _loadCombinedDateTime() {
+    final data = _transactionItem['createdAt'];
+
+    if (data != null) {
+      DateTime parsedDateTime = dateFormat.parse(data).toLocal();
+      setState(() {
+        _datetime = parsedDateTime;
+      });
+    }
+  }
+
   void _loadJournal() async {
     final data = await SQLHelper.getItems(
         switchArg: "filterById",
@@ -52,6 +67,12 @@ class _TransactionFormState extends State<TransactionForm> {
       _categoryController = _transactionItem['category'];
       _typeController = _transactionItem['type'];
     });
+
+    if (_isEditable) {
+      _loadCombinedDateTime(); // Load combined date and time for editing
+    } else {
+      _datetime = DateTime.now().toLocal();
+    }
   }
 
   Future<void> _submitForm() async {
@@ -82,6 +103,7 @@ class _TransactionFormState extends State<TransactionForm> {
         (_walletController.isEmpty) ? "cash" : _walletController,
         _typeController.toLowerCase(),
         _categoryController,
+        dateFormat.format(_datetime),
       );
     } catch (e) {
       print(e);
@@ -99,7 +121,8 @@ class _TransactionFormState extends State<TransactionForm> {
           _walletController,
           _typeController,
           _categoryController,
-          _oldTransactionAmount);
+          _oldTransactionAmount,
+          dateFormat.format(_datetime));
     } catch (e) {
       print(e);
     }
@@ -125,14 +148,15 @@ class _TransactionFormState extends State<TransactionForm> {
   Future<void> chooseDate(BuildContext context) async {
     DateTime initialDate = _datetime;
     final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: initialDate,
-        firstDate: DateTime(2000),
-        lastDate: DateTime.now());
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
     if (picked != null && initialDate != picked) {
       setState(() {
         _datetime = DateTime(picked.year, picked.month, picked.day,
-            initialDate.hour, initialDate.minute);
+            _datetime.hour, _datetime.minute);
       });
     }
   }
@@ -261,30 +285,27 @@ class _TransactionFormState extends State<TransactionForm> {
                           labelText: 'Description',
                         ),
                       ),
-                      ListTile(
-                        title: const Text('Income'),
-                        leading: Radio(
-                          value: 'income',
-                          groupValue: _typeController,
-                          onChanged: (value) {
-                            setState(() {
-                              _typeController = value.toString();
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      ListTile(
-                        title: const Text('Expense'),
-                        leading: Radio(
-                          value: 'expense',
-                          groupValue: _typeController,
-                          onChanged: (value) {
-                            setState(() {
-                              _typeController = value.toString();
-                            });
-                          },
-                        ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: 'income',
+                            groupValue: _typeController,
+                            onChanged: (value) {
+                              setState(() {
+                                _typeController = value.toString();
+                              });
+                            },
+                          ),
+                          Radio(
+                            value: 'expense',
+                            groupValue: _typeController,
+                            onChanged: (value) {
+                              setState(() {
+                                _typeController = value.toString();
+                              });
+                            },
+                          ),
+                        ],
                       ),
                       TextFormField(
                         initialValue: (_isEditable)
@@ -346,6 +367,21 @@ class _TransactionFormState extends State<TransactionForm> {
                         decoration: const InputDecoration(
                           labelText: 'Category',
                         ),
+                      ),
+                      const Text(
+                        'Selected Date and Time:',
+                      ),
+                      Text(
+                        '${_datetime.toLocal()}',
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => chooseDate(context),
+                        child: const Text('Choose Date'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => chooseTime(context),
+                        child: const Text('Choose Time'),
                       ),
                     ],
                   ),
