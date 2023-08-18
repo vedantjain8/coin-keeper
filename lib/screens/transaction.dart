@@ -80,8 +80,6 @@ class _TransactionFormState extends State<TransactionForm> {
       // ... existing code ...
       (_isEditable) ? _updateItem() : _addItem();
 
-      loadData4NavPagesClearFun();
-
       // Close the screen
       Navigator.of(context).pop();
 
@@ -134,8 +132,6 @@ class _TransactionFormState extends State<TransactionForm> {
       await SQLHelper.deleteItem(
           transactionId!, _amountController, _walletController);
 
-      loadData4NavPagesClearFun();
-
       // close the screen
       Navigator.of(context).pop();
     } catch (e) {
@@ -144,7 +140,6 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   // date time widget
-  // TODO add choose date and time button
   Future<void> chooseDate(BuildContext context) async {
     DateTime initialDate = _datetime;
     final DateTime? picked = await showDatePicker(

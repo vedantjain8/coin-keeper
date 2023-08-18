@@ -19,7 +19,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // variables
-  int _choiceIndex = 0;
 
   final ScrollController _scrollController = ScrollController();
   int limitN = 5;
@@ -42,7 +41,6 @@ class _HomePageState extends State<HomePage> {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         _loadMoreData();
-        // TODO add load more data here
       }
     });
   }
@@ -91,9 +89,7 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const TransactionForm(
-                // refreshData: refreshData
-                ),
+            builder: (context) => const TransactionForm(),
           ),
         ),
       ),
@@ -203,77 +199,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // StreamBuilder<List<Map<String, dynamic>>>(
-          //   stream: CategoryJournalStream().categoryjournalStream,
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return const CircularProgressIndicator();
-          //     } else if (snapshot.hasError) {
-          //       return Text('Error: ${snapshot.error}');
-          //     } else {
-          //       final categoriesjournals = snapshot.data ?? [];
-          //       return (categoriesjournals.isNotEmpty)
-          //           ? Container(
-          //               height: 60,
-          //               padding: const EdgeInsets.only(left: 10, right: 10),
-          //               child: ListView.builder(
-          //                 scrollDirection: Axis.horizontal,
-          //                 itemCount: categoriesjournals.length + 1,
-          //                 itemBuilder: (context, index) {
-          //                   if (index == 0) {
-          //                     return Padding(
-          //                       padding: const EdgeInsets.all(8.0),
-          //                       child: ChoiceChip(
-          //                         label: const Text("All"),
-          //                         selected: _choiceIndex == index,
-          //                         selectedColor: chipSelectedColor,
-          //                         onSelected: (bool selected) async {
-          //                           final data = await SQLHelper.getItems(
-          //                               switchArg: "all",
-          //                               tableName: "transactions");
-          //                           setState(() {
-          //                             _choiceIndex = selected ? index : 0;
-          //                             // _journals = data;
-          //                             // TODO add update of value in choice chip
-          //                           });
-          //                         },
-          //                         backgroundColor: chipBackgroundColor,
-          //                         labelStyle: chipTextStyle,
-          //                       ),
-          //                     );
-          //                   } else {
-          //                     return Padding(
-          //                       padding: const EdgeInsets.all(8.0),
-          //                       child: ChoiceChip(
-          //                         label: Text(categoriesjournals[index - 1]
-          //                             ['category']),
-          //                         selected: _choiceIndex == index,
-          //                         selectedColor: chipSelectedColor,
-          //                         onSelected: (bool selected) async {
-          //                           final data = await SQLHelper.getItems(
-          //                               switchArg: "filterByCategories",
-          //                               tableName: "transactions",
-          //                               categoriesclm:
-          //                                   categoriesjournals[index - 1]
-          //                                       ["category"]);
-          //                           setState(() {
-          //                             _choiceIndex = selected ? index : 0;
-          //                             // _journals = data;
-          //                             // TODO add update of value in choice chip
-          //                           });
-          //                         },
-          //                         backgroundColor: chipBackgroundColor,
-          //                         labelStyle: chipTextStyle,
-          //                       ),
-          //                     );
-          //                   }
-          //                 },
-          //               ),
-          //             )
-          //           : const SizedBox.shrink();
-          //     }
-          //   },
-          // ),
           Expanded(
             child: StreamBuilder<List<Map<String, dynamic>>>(
               stream: JournalStream().journalStream,

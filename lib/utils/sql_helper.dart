@@ -1,3 +1,4 @@
+import 'package:coinkeeper/provider/reload_data.dart';
 import 'package:coinkeeper/settings/sharedpreferences.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:intl/intl.dart';
@@ -171,6 +172,8 @@ class SQLHelper {
         ],
       );
     }
+
+    loadData4NavPagesClearFun();
   }
 
   // create custom wallet
@@ -246,6 +249,7 @@ class SQLHelper {
     final amountDiff = amount - oldTransactionAmount;
 
     await updateWalletAmount(wallet!, amountDiff);
+    loadData4NavPagesClearFun();
     return result;
   }
 
@@ -258,6 +262,7 @@ class SQLHelper {
       // Calculate the negative amount to subtract from the wallet
       final amountDiff = -amount;
       await updateWalletAmount(wallet, amountDiff);
+      loadData4NavPagesClearFun();
     } catch (e) {
       print(e);
     }

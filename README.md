@@ -36,7 +36,6 @@ A new Flutter project.
 
 ### TODOs
 - [ ] show distinct category for as menu item text box in new transaction screen
-- [ ] complete inline TODOs
 - [ ] add modal file
 - [ ] fix when changing transaction wallet amount does not update to new wallet
 - [ ] caching data
