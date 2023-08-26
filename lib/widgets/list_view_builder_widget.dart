@@ -10,13 +10,14 @@ Widget listViewBuilderWidget({
   ScrollController? scrollController,
 }) {
   return ListView.builder(
+    shrinkWrap: true,
     controller: scrollController,
     itemCount: journals.length,
     itemBuilder: (context, index) => Card(
       color: (journals[index]['type'].toString().toLowerCase() == "income")
           ? listviewBuilderListIncomeColor
           : listviewBuilderListExpenseColor,
-      margin: const EdgeInsets.all(15),
+      margin: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
       child: ListTile(
         onTap: () {
           Navigator.of(context).push(
@@ -32,7 +33,7 @@ Widget listViewBuilderWidget({
         subtitle: Text(journals[index]['createdAt']),
         leading: (journals[index]['wallet'] == "cash")
             ? const Icon(
-                Icons.payment,
+                Icons.wallet_rounded,
                 size: 42,
               )
             : Text(journals[index]['wallet']),

@@ -276,5 +276,6 @@ class SQLHelper {
     await SQLHelper.createTables(db);
     deleteOption;
     initOption();
+    loadData4NavPagesClearFun();
   }
 }

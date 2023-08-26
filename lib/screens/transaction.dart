@@ -1,4 +1,3 @@
-import 'package:coinkeeper/provider/reload_data.dart';
 import 'package:coinkeeper/theme/color.dart';
 import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +24,8 @@ class _TransactionFormState extends State<TransactionForm> {
   late int? transactionId;
   Map<String, dynamic> _transactionItem = {};
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  var _dropdownValue = "Income";
+  final List<String> _transactionType = ["Income", "Expense"];
 
   // controllers
   String _titleController = "";
@@ -32,7 +33,6 @@ class _TransactionFormState extends State<TransactionForm> {
   double _amountController = 0.0;
   String _walletController = "";
   String _categoryController = "";
-  String _typeController = "income";
   double _oldTransactionAmount = 0.0;
   DateTime _datetime = DateTime.now();
 
@@ -65,7 +65,7 @@ class _TransactionFormState extends State<TransactionForm> {
       _descriptionController = _transactionItem['description'];
       _walletController = _transactionItem['wallet'];
       _categoryController = _transactionItem['category'];
-      _typeController = _transactionItem['type'];
+      _dropdownValue = _transactionItem['type'];
     });
 
     if (_isEditable) {
@@ -99,12 +99,35 @@ class _TransactionFormState extends State<TransactionForm> {
         //     : double.parse('-$_amountController'),
         _amountController,
         (_walletController.isEmpty) ? "cash" : _walletController,
-        _typeController.toLowerCase(),
+        _dropdownValue.toLowerCase(),
         _categoryController,
         dateFormat.format(_datetime),
       );
     } catch (e) {
       print(e);
+    }
+  }
+
+// only for debug
+// TODO remove
+  Future<void> _addItemInLoop() async {
+    for (int i = 0; i <= 20; i++) {
+      try {
+        await SQLHelper.createItem(
+          (_titleController.isEmpty) ? "Adjusted Balance" : _titleController,
+          _descriptionController,
+          // (_typeController.toString().toLowerCase() == "income")
+          //     ? double.parse('+$_amountController')
+          //     : double.parse('-$_amountController'),
+          _amountController,
+          (_walletController.isEmpty) ? "cash" : _walletController,
+          _dropdownValue.toLowerCase(),
+          _categoryController,
+          dateFormat.format(_datetime),
+        );
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -117,7 +140,7 @@ class _TransactionFormState extends State<TransactionForm> {
           _descriptionController,
           _amountController,
           _walletController,
-          _typeController,
+          _dropdownValue,
           _categoryController,
           _oldTransactionAmount,
           dateFormat.format(_datetime));
@@ -154,6 +177,8 @@ class _TransactionFormState extends State<TransactionForm> {
             _datetime.hour, _datetime.minute);
       });
     }
+
+    chooseTime(context);
   }
 
   Future<void> chooseTime(BuildContext context) async {
@@ -163,7 +188,7 @@ class _TransactionFormState extends State<TransactionForm> {
     final TimeOfDay? time = await showTimePicker(
         context: context,
         initialTime: initialTime,
-        initialEntryMode: TimePickerEntryMode.input);
+        initialEntryMode: TimePickerEntryMode.dial);
     if (time != null && initialTime != time) {
       setState(() {
         _datetime = DateTime(initialDate.year, initialDate.month,
@@ -280,28 +305,6 @@ class _TransactionFormState extends State<TransactionForm> {
                           labelText: 'Description',
                         ),
                       ),
-                      Row(
-                        children: [
-                          Radio(
-                            value: 'income',
-                            groupValue: _typeController,
-                            onChanged: (value) {
-                              setState(() {
-                                _typeController = value.toString();
-                              });
-                            },
-                          ),
-                          Radio(
-                            value: 'expense',
-                            groupValue: _typeController,
-                            onChanged: (value) {
-                              setState(() {
-                                _typeController = value.toString();
-                              });
-                            },
-                          ),
-                        ],
-                      ),
                       TextFormField(
                         initialValue: (_isEditable)
                             ? _transactionItem['amount'].toString()
@@ -313,11 +316,11 @@ class _TransactionFormState extends State<TransactionForm> {
 
                           double parsedAmount = double.tryParse(value) ?? 0.0;
 
-                          if (_typeController.toLowerCase() == "income") {
+                          if (_dropdownValue.toLowerCase() == "income") {
                             if (parsedAmount < 0) {
                               return "Please enter a valid positive amount";
                             }
-                          } else if (_typeController.toLowerCase() ==
+                          } else if (_dropdownValue.toLowerCase() ==
                               "expense") {
                             if (parsedAmount >= 0) {
                               return "Please enter a valid negative amount";
@@ -339,6 +342,61 @@ class _TransactionFormState extends State<TransactionForm> {
                         ],
                         decoration: const InputDecoration(
                           labelText: 'Amount',
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Row(
+                          children: [
+                            (_dropdownValue.toLowerCase() == "income")
+                                ? const Icon(
+                                    Icons.download,
+                                    color: Colors.green,
+                                    size: 48.0,
+                                  )
+                                : const Icon(
+                                    Icons.upload,
+                                    color: Colors.red,
+                                    size: 48.0,
+                                  ),
+                            Column(
+                              children: [
+                                const Padding(
+                                  padding:
+                                      EdgeInsets.only(top: 10.0, left: 10.0),
+                                  child: Text("Transaction type"),
+                                ),
+                                ButtonTheme(
+                                  alignedDropdown: true,
+                                  child: DropdownButton<String>(
+                                    value: _dropdownValue,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 24,
+                                    elevation: 14,
+                                    onChanged: (String? value) {
+                                      // This is called when the user selects an item.
+                                      setState(() {
+                                        _dropdownValue = value!;
+                                      });
+                                    },
+                                    items: _transactionType
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                       TextFormField(
@@ -363,20 +421,23 @@ class _TransactionFormState extends State<TransactionForm> {
                           labelText: 'Category',
                         ),
                       ),
-                      const Text(
-                        'Selected Date and Time:',
-                      ),
-                      Text(
-                        '${_datetime.toLocal()}',
-                      ),
                       const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () => chooseDate(context),
-                        child: const Text('Choose Date'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => chooseTime(context),
-                        child: const Text('Choose Time'),
+                      Row(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () => chooseDate(context),
+                            child: const Row(
+                              children: [
+                                Icon(Icons.calendar_month),
+                                Text('Choose Date & Time'),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(DateFormat('yyyy-MM-dd hh:mm a')
+                              .format(_datetime)
+                              .toString()),
+                        ],
                       ),
                     ],
                   ),
