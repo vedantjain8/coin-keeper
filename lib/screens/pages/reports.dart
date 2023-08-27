@@ -19,69 +19,72 @@ class _ReportsPageState extends State<ReportsPage> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 40,
-          ),
-          const Text("Expense Chart"),
-          StreamBuilder<List<Map<String, dynamic>>>(
-            stream: CategoryExpense4ReportJournalStream()
-                .categoryExpense4ReportJournalStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                final expensesjournals = snapshot.data ?? [];
-                return returnReportPieChart(
-                    journals: listToMap(expensesjournals),
-                    centerText: "Expense Chart");
-              }
-            },
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          const Text("Income Chart"),
-          StreamBuilder<List<Map<String, dynamic>>>(
-            stream: CategoryIncome4ReportJournalStream()
-                .categoryIncome4ReportJournalStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                final incomejournals = snapshot.data ?? [];
-                return returnReportPieChart(
-                    journals: listToMap(incomejournals),
-                    centerText: "Income Chart");
-              }
-            },
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          const Text("wallet Chart"),
-          StreamBuilder<List<Map<String, dynamic>>>(
-            stream: CategoryWallet4ReportJournalStream()
-                .categoryWallet4ReportJournalStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                final walletjournals = snapshot.data ?? [];
-                return returnReportPieChart(
-                    journals: listToMap(walletjournals),
-                    centerText: "Wallet Chart");
-              }
-            },
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 40,
+            ),
+            const Text("Expense Chart"),
+            StreamBuilder<List<Map<String, dynamic>>>(
+              stream: CategoryExpense4ReportJournalStream()
+                  .categoryExpense4ReportJournalStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  final expensesjournals = snapshot.data ?? [];
+                  return returnReportPieChart(
+                      journals: listToMap(expensesjournals),
+                      centerText: "Expense Chart");
+                }
+              },
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            const Text("Income Chart"),
+            StreamBuilder<List<Map<String, dynamic>>>(
+              stream: CategoryIncome4ReportJournalStream()
+                  .categoryIncome4ReportJournalStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  final incomejournals = snapshot.data ?? [];
+                  return returnReportPieChart(
+                      journals: listToMap(incomejournals),
+                      centerText: "Income Chart");
+                }
+              },
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            const Text("wallet Chart"),
+            StreamBuilder<List<Map<String, dynamic>>>(
+              stream: CategoryWallet4ReportJournalStream()
+                  .categoryWallet4ReportJournalStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  final walletjournals = snapshot.data ?? [];
+                  return returnReportPieChart(
+                      journals: listToMap(walletjournals),
+                      centerText: "Wallet Chart");
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -31,7 +31,7 @@ Widget listViewBuilderWidget({
         },
         title: Text(journals[index]['title'].toString()),
         subtitle: Text(journals[index]['createdAt']),
-        leading: (journals[index]['wallet'] == "cash")
+        leading: (journals[index]['wallet'] == "Cash")
             ? const Icon(
                 Icons.wallet_rounded,
                 size: 42,

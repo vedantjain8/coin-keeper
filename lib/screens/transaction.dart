@@ -98,8 +98,8 @@ class _TransactionFormState extends State<TransactionForm> {
         //     ? double.parse('+$_amountController')
         //     : double.parse('-$_amountController'),
         _amountController,
-        (_walletController.isEmpty) ? "cash" : _walletController,
-        _dropdownValue.toLowerCase(),
+        (_walletController.isEmpty) ? "Cash" : _walletController,
+        _dropdownValue,
         _categoryController,
         dateFormat.format(_datetime),
       );
@@ -111,17 +111,19 @@ class _TransactionFormState extends State<TransactionForm> {
 // only for debug
 // TODO remove
   Future<void> _addItemInLoop() async {
-    for (int i = 0; i <= 20; i++) {
+    for (int i = 1; i <= 10; i++) {
       try {
         await SQLHelper.createItem(
-          (_titleController.isEmpty) ? "Adjusted Balance" : _titleController,
+          (_titleController.isEmpty)
+              ? "Adjusted Balance $i "
+              : _titleController,
           _descriptionController,
           // (_typeController.toString().toLowerCase() == "income")
           //     ? double.parse('+$_amountController')
           //     : double.parse('-$_amountController'),
           _amountController,
-          (_walletController.isEmpty) ? "cash" : _walletController,
-          _dropdownValue.toLowerCase(),
+          (_walletController.isEmpty) ? "Cash" : _walletController,
+          _dropdownValue,
           _categoryController,
           dateFormat.format(_datetime),
         );
@@ -282,6 +284,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 child: Form(
                   key: _formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextFormField(
                         initialValue: _transactionItem['title'],
@@ -291,8 +294,15 @@ class _TransactionFormState extends State<TransactionForm> {
                           });
                         },
                         decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
                           labelText: 'Title',
                         ),
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       TextFormField(
                         initialValue: _transactionItem['description'],
@@ -302,8 +312,15 @@ class _TransactionFormState extends State<TransactionForm> {
                           });
                         },
                         decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
                           labelText: 'Description',
                         ),
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       TextFormField(
                         initialValue: (_isEditable)
@@ -316,12 +333,11 @@ class _TransactionFormState extends State<TransactionForm> {
 
                           double parsedAmount = double.tryParse(value) ?? 0.0;
 
-                          if (_dropdownValue.toLowerCase() == "income") {
+                          if (_dropdownValue == "Income") {
                             if (parsedAmount < 0) {
                               return "Please enter a valid positive amount";
                             }
-                          } else if (_dropdownValue.toLowerCase() ==
-                              "expense") {
+                          } else if (_dropdownValue == "Expense") {
                             if (parsedAmount >= 0) {
                               return "Please enter a valid negative amount";
                             }
@@ -341,63 +357,63 @@ class _TransactionFormState extends State<TransactionForm> {
                               RegExp(r'^\-?\d{0,10}(\.\d{0,2})?$')),
                         ],
                         decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
                           labelText: 'Amount',
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Row(
-                          children: [
-                            (_dropdownValue.toLowerCase() == "income")
-                                ? const Icon(
-                                    Icons.download,
-                                    color: Colors.green,
-                                    size: 48.0,
-                                  )
-                                : const Icon(
-                                    Icons.upload,
-                                    color: Colors.red,
-                                    size: 48.0,
-                                  ),
-                            Column(
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      DropdownButtonFormField<String>(
+                        value: _dropdownValue,
+                        onChanged: (String? value) {
+                          setState(() {
+                            _dropdownValue = value!;
+                          });
+                        },
+                        items: _transactionType
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Row(
                               children: [
-                                const Padding(
-                                  padding:
-                                      EdgeInsets.only(top: 10.0, left: 10.0),
-                                  child: Text("Transaction type"),
-                                ),
-                                ButtonTheme(
-                                  alignedDropdown: true,
-                                  child: DropdownButton<String>(
-                                    value: _dropdownValue,
-                                    icon: const Icon(Icons.arrow_drop_down),
-                                    iconSize: 24,
-                                    elevation: 14,
-                                    onChanged: (String? value) {
-                                      // This is called when the user selects an item.
-                                      setState(() {
-                                        _dropdownValue = value!;
-                                      });
-                                    },
-                                    items: _transactionType
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          value,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
+                                (value == "Income")
+                                    ? const Icon(
+                                        Icons.download,
+                                        color: Colors.green,
+                                        // size: 48.0,
+                                      )
+                                    : const Icon(
+                                        Icons.upload,
+                                        color: Colors.red,
+                                        // size: 48.0,
+                                      ),
+                                const SizedBox(
+                                    width:
+                                        10), // Add spacing between icon and text
+                                Text(
+                                  value,
+                                  style: const TextStyle(
+                                    fontSize: 16,
                                   ),
                                 ),
                               ],
                             ),
-                          ],
+                          );
+                        }).toList(),
+                        decoration: const InputDecoration(
+                          labelText: "Transaction Type",
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
                         ),
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       TextFormField(
                         initialValue: _transactionItem['wallet'],
@@ -407,8 +423,15 @@ class _TransactionFormState extends State<TransactionForm> {
                           });
                         },
                         decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
                           labelText: 'Wallet',
                         ),
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       TextFormField(
                         initialValue: _transactionItem['category'],
@@ -418,26 +441,28 @@ class _TransactionFormState extends State<TransactionForm> {
                           });
                         },
                         decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
                           labelText: 'Category',
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () => chooseDate(context),
-                            child: const Row(
-                              children: [
-                                Icon(Icons.calendar_month),
-                                Text('Choose Date & Time'),
-                              ],
+                      ElevatedButton(
+                        onPressed: () => chooseDate(context),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.calendar_month),
+                            const SizedBox(
+                              width: 8,
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(DateFormat('yyyy-MM-dd hh:mm a')
-                              .format(_datetime)
-                              .toString()),
-                        ],
+                            // Text('Choose Date & Time'),
+                            Text(DateFormat('yyyy-MM-dd hh:mm a')
+                                .format(_datetime)
+                                .toString()),
+                          ],
+                        ),
                       ),
                     ],
                   ),

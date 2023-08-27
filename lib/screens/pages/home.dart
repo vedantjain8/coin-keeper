@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _username.toString(),
+                        "Hi $_username!",
                       ),
                       const Text(
                         "Welcome Back 👋",
@@ -121,11 +121,13 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               width: double.infinity,
               child: Card(
+                color: primaryColor,
+                elevation: 12,
                 clipBehavior: Clip.hardEdge,
                 child: InkWell(
                   splashColor: onClickColor,
                   onTap: () {
-                    const walletHead = "cash";
+                    const walletHead = "Cash";
 
                     loadData4WalletPage(walletHead);
 
@@ -137,70 +139,67 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   },
-                  child: Card(
-                    color: primaryColor,
-                    child: StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: CashWalletHeadJournalStream()
-                          .cashWalletHeadJournalStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          final walletjournals = snapshot.data ?? [];
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (walletjournals.isNotEmpty)
-                                  Text(
-                                    (formatCurrency
-                                        .format(walletjournals[0]['amount'])),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineMedium
-                                        ?.merge(
-                                          TextStyle(
-                                              color: Colors.white,
-                                              fontFamily:
-                                                  GoogleFonts.jetBrainsMono()
-                                                      .fontFamily,
-                                              fontWeight: FontWeight.w700),
-                                        ),
-                                  ),
-                                const Text(
-                                  "Balance",
-                                ),
-                                const SizedBox(height: 50),
-                                if (walletjournals.isNotEmpty)
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        walletjournals[0]["title"].toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.apply(
-                                                color:
-                                                    Colors.white.withOpacity(1),
-                                                fontWeightDelta: 2),
+                  child: StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: CashWalletHeadJournalStream()
+                        .cashWalletHeadJournalStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        final walletjournals = snapshot.data ?? [];
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (walletjournals.isNotEmpty)
+                                Text(
+                                  (formatCurrency
+                                      .format(walletjournals[0]['amount'])),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium
+                                      ?.merge(
+                                        TextStyle(
+                                            color: Colors.white,
+                                            fontFamily:
+                                                GoogleFonts.jetBrainsMono()
+                                                    .fontFamily,
+                                            fontWeight: FontWeight.w700),
                                       ),
-                                      const Expanded(child: SizedBox()),
-                                      const Icon(Icons.money,
-                                          color: Colors.white)
-                                    ],
-                                  )
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                                ),
+                              const Text(
+                                "Balance",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(height: 40),
+                              if (walletjournals.isNotEmpty)
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      walletjournals[0]["title"].toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.apply(
+                                              color:
+                                                  Colors.white.withOpacity(1),
+                                              fontWeightDelta: 2),
+                                    ),
+                                    const Expanded(child: SizedBox()),
+                                    const Icon(Icons.money, color: Colors.white)
+                                  ],
+                                )
+                            ],
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
               ),
@@ -221,27 +220,36 @@ class _HomePageState extends State<HomePage> {
                   return Text('Error: ${snapshot.error}');
                 } else {
                   final journals = snapshot.data ?? [];
-                  return Column(
-                    children: [
-                      const Row(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 15, bottom: 10),
+                  return (journals != [])
+                      ? Column(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                left: 15,
+                                bottom: 10,
+                                top: 25,
+                              ),
+                              child: Text(
+                                "Last Transactions",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            listViewBuilderWidget(
+                              journals: journals,
+                              scrollController: _scrollController,
+                            ),
+                          ],
+                        )
+                      : const Padding(
+                          padding: EdgeInsets.only(top: 25),
+                          child: Center(
                             child: Text(
-                              "Last Transactions",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w600),
+                              "No records found",
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        ],
-                      ),
-                      listViewBuilderWidget(
-                        journals: journals,
-                        scrollController: _scrollController,
-                      ),
-                    ],
-                  );
+                        );
                 }
               },
             ),

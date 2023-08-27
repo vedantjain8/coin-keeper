@@ -24,7 +24,7 @@ class SQLHelper {
           updatedAt TIMESTAMP NOT NULL
           )""");
 
-    await SQLHelper.createWalletItem(0, "cash", null);
+    await SQLHelper.createWalletItem(0, "Cash", null);
   }
 
   // open db
@@ -117,7 +117,7 @@ class SQLHelper {
   ) async {
     final db = await SQLHelper.db();
 
-    wallet = (wallet ?? "cash");
+    wallet = (wallet ?? "Cash");
 
     final data = {
       'title': title,
@@ -181,7 +181,7 @@ class SQLHelper {
       double amount, String? wallet, double? oldTransactionAmount) async {
     final db = await SQLHelper.db();
 
-    wallet = (wallet ?? "cash");
+    wallet = (wallet ?? "Cash");
     double calculatedTotal = 0.0;
 
     final result = await db.rawQuery(
@@ -249,7 +249,6 @@ class SQLHelper {
     final amountDiff = amount - oldTransactionAmount;
 
     await updateWalletAmount(wallet!, amountDiff);
-    loadData4NavPagesClearFun();
     return result;
   }
 

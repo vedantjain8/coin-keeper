@@ -20,7 +20,7 @@ void loadData4NavPages() async {
   final cashWalletData = await SQLHelper.getItems(
     switchArg: "filterByTitle",
     tableName: "wallets",
-    titleclm: "cash",
+    titleclm: "Cash",
   );
 
   // wallet page
@@ -34,12 +34,12 @@ void loadData4NavPages() async {
       switchArg: "categoriesReport",
       tableName: "transactions",
       whereqry: "type",
-      whereqryvalue: "expense");
+      whereqryvalue: "Expense");
   final categoriesdata4income = await SQLHelper.getItems(
       switchArg: "categoriesReport",
       tableName: "transactions",
       whereqry: "type",
-      whereqryvalue: "income");
+      whereqryvalue: "Income");
   final categoriesdata4wallet = await SQLHelper.getItems(
     switchArg: "walletReport",
     tableName: "wallets",
