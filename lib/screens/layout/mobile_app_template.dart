@@ -61,8 +61,6 @@ class _MobileAppTemplateState extends State<MobileAppTemplate> {
                 ),
               )
             ],
-            // offset:
-            //     const Offset(0, 50),
             elevation: 2,
             onSelected: (value) {
               switch (value) {

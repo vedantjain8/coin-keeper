@@ -61,10 +61,8 @@ class _SettingsPageState extends State<SettingsPage> {
       future: getOption("userName"),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // Show a loading indicator while waiting for the data to be fetched
           return const Center(child: CircularProgressIndicator());
         } else {
-          // Once the data is available, build the rest of the UI
           return Scaffold(
             appBar: AppBar(
               title: const Text("Settings"),
@@ -108,7 +106,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           value: _dropdownValue,
                           icon: const Icon(Icons.attach_money),
                           onChanged: (String? value) {
-                            // This is called when the user selects an item.
                             setState(() {
                               _dropdownValue = value!;
                               updateCurrencyName(_dropdownValue);

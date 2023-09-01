@@ -3,13 +3,12 @@ import 'package:coinkeeper/utils/sql_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import "package:coinkeeper/data/consts.dart";
 
 class TransactionForm extends StatefulWidget {
-  // final void Function() refreshData;
   final int? id;
   const TransactionForm({
     super.key,
-    // required this.refreshData,
     this.id,
   });
 
@@ -35,8 +34,6 @@ class _TransactionFormState extends State<TransactionForm> {
   String _categoryController = "";
   double _oldTransactionAmount = 0.0;
   DateTime _datetime = DateTime.now();
-
-  DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
 
   // Load combined date and time from transaction item
   void _loadCombinedDateTime() {
@@ -77,13 +74,8 @@ class _TransactionFormState extends State<TransactionForm> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      // ... existing code ...
       (_isEditable) ? _updateItem() : _addItem();
-
-      // Close the screen
       Navigator.of(context).pop();
-
-      // Clear form fields
       _formKey.currentState!.reset();
     }
   }
@@ -94,9 +86,6 @@ class _TransactionFormState extends State<TransactionForm> {
       await SQLHelper.createItem(
         (_titleController.isEmpty) ? "Adjusted Balance" : _titleController,
         _descriptionController,
-        // (_typeController.toString().toLowerCase() == "income")
-        //     ? double.parse('+$_amountController')
-        //     : double.parse('-$_amountController'),
         _amountController,
         (_walletController.isEmpty) ? "Cash" : _walletController,
         _dropdownValue,
@@ -105,31 +94,6 @@ class _TransactionFormState extends State<TransactionForm> {
       );
     } catch (e) {
       print(e);
-    }
-  }
-
-// only for debug
-// TODO remove
-  Future<void> _addItemInLoop() async {
-    for (int i = 1; i <= 10; i++) {
-      try {
-        await SQLHelper.createItem(
-          (_titleController.isEmpty)
-              ? "Adjusted Balance $i "
-              : _titleController,
-          _descriptionController,
-          // (_typeController.toString().toLowerCase() == "income")
-          //     ? double.parse('+$_amountController')
-          //     : double.parse('-$_amountController'),
-          _amountController,
-          (_walletController.isEmpty) ? "Cash" : _walletController,
-          _dropdownValue,
-          _categoryController,
-          dateFormat.format(_datetime),
-        );
-      } catch (e) {
-        print(e);
-      }
     }
   }
 
@@ -209,8 +173,6 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   void dispose() async {
-    // TODO add disposes
-    print('Dispose used');
     super.dispose();
   }
 
@@ -269,7 +231,6 @@ class _TransactionFormState extends State<TransactionForm> {
                   ],
                 )
               : const SizedBox.shrink()
-          // add anything for top right corner widget in the add transaction layout
         ],
       ),
       body: SingleChildScrollView(
@@ -384,16 +345,12 @@ class _TransactionFormState extends State<TransactionForm> {
                                     ? const Icon(
                                         Icons.download,
                                         color: Colors.green,
-                                        // size: 48.0,
                                       )
                                     : const Icon(
                                         Icons.upload,
                                         color: Colors.red,
-                                        // size: 48.0,
                                       ),
-                                const SizedBox(
-                                    width:
-                                        10), // Add spacing between icon and text
+                                const SizedBox(width: 10),
                                 Text(
                                   value,
                                   style: const TextStyle(
@@ -457,8 +414,7 @@ class _TransactionFormState extends State<TransactionForm> {
                             const SizedBox(
                               width: 8,
                             ),
-                            // Text('Choose Date & Time'),
-                            Text(DateFormat('yyyy-MM-dd hh:mm a')
+                            Text(DateFormat('yyyy-MM-dd hh:mm:ss aa')
                                 .format(_datetime)
                                 .toString()),
                           ],

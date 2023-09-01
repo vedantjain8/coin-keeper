@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 
 Widget listViewBuilderWidget({
   required List<Map<String, dynamic>> journals,
-  // required bool isLoading,
-  // required void Function() refreshData,
   ScrollController? scrollController,
 }) {
   return ListView.builder(
@@ -24,7 +22,6 @@ Widget listViewBuilderWidget({
             MaterialPageRoute(
               builder: (context) => TransactionForm(
                 id: journals[index]["id"],
-                // refreshData: refreshData
               ),
             ),
           );

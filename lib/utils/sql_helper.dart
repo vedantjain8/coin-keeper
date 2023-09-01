@@ -1,7 +1,7 @@
 import 'package:coinkeeper/provider/reload_data.dart';
 import 'package:coinkeeper/settings/sharedpreferences.dart';
 import 'package:sqflite/sqflite.dart' as sql;
-import 'package:intl/intl.dart';
+import 'package:coinkeeper/data/consts.dart';
 
 class SQLHelper {
   // create table
@@ -153,7 +153,7 @@ class SQLHelper {
         {
           "title": wallet,
           "amount": amount,
-          "updatedAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+          "updatedAt": dateFormat.format(DateTime.now()),
         },
         conflictAlgorithm: sql.ConflictAlgorithm.replace,
       );
@@ -167,7 +167,7 @@ class SQLHelper {
         'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
         [
           calculatedTotal,
-          DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+          dateFormat.format(DateTime.now()),
           wallet,
         ],
       );
@@ -195,12 +195,11 @@ class SQLHelper {
         {
           "title": wallet,
           "amount": amount,
-          "updatedAt": DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+          "updatedAt": dateFormat.format(DateTime.now()),
         },
         conflictAlgorithm: sql.ConflictAlgorithm.replace,
       );
     } else {
-      // final tranasactionResult = await db.query("select amount from transactions where id = ?", whereArgs: [transactionId]);
       oldTransactionAmount = (oldTransactionAmount ?? 0.0);
       final total = result.first['amount'] ?? 0;
       final double parsedTotal =
@@ -211,7 +210,7 @@ class SQLHelper {
         'UPDATE wallets SET amount = ?, updatedAt = ? WHERE title = ?',
         [
           calculatedTotal,
-          DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()),
+          dateFormat.format(DateTime.now()),
           wallet,
         ],
       );
@@ -245,7 +244,6 @@ class SQLHelper {
     final result =
         db.update('transactions', data, where: "id = ?", whereArgs: [id]);
 
-    // Calculate the difference in amount for the wallet
     final amountDiff = amount - oldTransactionAmount;
 
     await updateWalletAmount(wallet!, amountDiff);
@@ -258,7 +256,6 @@ class SQLHelper {
     try {
       await db.delete("transactions", where: "id = ?", whereArgs: [id]);
 
-      // Calculate the negative amount to subtract from the wallet
       final amountDiff = -amount;
       await updateWalletAmount(wallet, amountDiff);
       loadData4NavPagesClearFun();

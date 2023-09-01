@@ -22,6 +22,7 @@ class _ReportsPageState extends State<ReportsPage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(
               height: 40,
@@ -66,7 +67,7 @@ class _ReportsPageState extends State<ReportsPage> {
             const SizedBox(
               height: 40,
             ),
-            const Text("wallet Chart"),
+            const Text("Wallet Chart"),
             StreamBuilder<List<Map<String, dynamic>>>(
               stream: CategoryWallet4ReportJournalStream()
                   .categoryWallet4ReportJournalStream,

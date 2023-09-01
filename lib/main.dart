@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
 }
 
 class _LoadSQLTable {
-  // open db
   static Future<sql.Database> db() async {
     var databasesPath = await sql.getDatabasesPath();
     var path = '$databasesPath/transaction.db';

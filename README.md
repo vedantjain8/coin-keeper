@@ -31,17 +31,14 @@ A new Flutter project.
 - [x] infinite scroll pagination, lazy loading
 - [x] complete transaction.dart for date time selection with db table update
 - [x] update the sql_helper according to the datetime select code
+- [x] code cleanup
 
 ### Working on it
 
 ### TODOs
 - [ ] show distinct category for as menu item text box in new transaction screen
-- [ ] add modal file
 - [ ] fix when changing transaction wallet amount does not update to new wallet
-- [ ] caching data
 - [ ] design
-- [ ] theme change button in settings
-- [ ] code cleanup
 - [ ] [export data to csv or other format and import](https://docs.flutter.dev/cookbook/persistence/reading-writing-files)
 
 ### maybe TODOs

@@ -13,10 +13,6 @@ void loadData4NavPages() async {
     tableName: "transactions",
     limit: 10,
   );
-  // final categoriesData = await SQLHelper.getItems(
-  //   switchArg: "categories",
-  //   tableName: "transactions",
-  // );
   final cashWalletData = await SQLHelper.getItems(
     switchArg: "filterByTitle",
     tableName: "wallets",
@@ -47,6 +43,7 @@ void loadData4NavPages() async {
 
   // Update the journal data through the stream
   JournalStream().updateJournalData(journalData);
+
   // CategoryJournalStream().updateJournalData(categoriesData);
   CashWalletHeadJournalStream().updateJournalData(cashWalletData);
 

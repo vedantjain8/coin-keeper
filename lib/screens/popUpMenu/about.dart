@@ -18,11 +18,16 @@ class _AboutPageState extends State<AboutPage> {
         title: const Text("About"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-                "Hello! This is the developer of this app. Hope so you are enjoing this app. For any bugs and issue reporting create a new issue on the github repo. Thank You!"),
+              "Hello👋! \n I hope you're enjoying it. If you encounter any bugs or issues, please report them on the GitHub Issues. \n Thank You!",
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(
               height: 20,
             ),

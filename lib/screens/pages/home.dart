@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -121,6 +122,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               width: double.infinity,
               child: Card(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
                 color: primaryColor,
                 elevation: 12,
                 clipBehavior: Clip.hardEdge,
@@ -204,13 +206,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            // const Padding(
-            //   padding: EdgeInsets.only(left: 15),
-            //   child: Text(
-            //     "Last Transactions",
-            //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-            //   ),
-            // ),
             StreamBuilder<List<Map<String, dynamic>>>(
               stream: JournalStream().journalStream,
               builder: (context, snapshot) {
@@ -220,8 +215,17 @@ class _HomePageState extends State<HomePage> {
                   return Text('Error: ${snapshot.error}');
                 } else {
                   final journals = snapshot.data ?? [];
-                  return (journals != [])
-                      ? Column(
+                  return (journals.isEmpty)
+                      ? const Padding(
+                          padding: EdgeInsets.only(top: 25),
+                          child: Center(
+                            child: Text(
+                              "No records found",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        )
+                      : Column(
                           children: [
                             const Padding(
                               padding: EdgeInsets.only(
@@ -240,15 +244,6 @@ class _HomePageState extends State<HomePage> {
                               scrollController: _scrollController,
                             ),
                           ],
-                        )
-                      : const Padding(
-                          padding: EdgeInsets.only(top: 25),
-                          child: Center(
-                            child: Text(
-                              "No records found",
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
                         );
                 }
               },

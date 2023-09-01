@@ -30,6 +30,12 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
     });
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _loadMoreData() async {
     final newData = await SQLHelper.getItems(
       switchArg: "limit",
@@ -63,7 +69,6 @@ class _WalletDetailedPageState extends State<WalletDetailedPage> {
             final data = snapshot.data ?? [];
             return listViewBuilderWidget(
               journals: data,
-              // refreshData: refreshData,
               scrollController: _scrollController,
             );
           }

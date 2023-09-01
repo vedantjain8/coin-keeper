@@ -28,30 +28,6 @@ class JournalStream {
   }
 }
 
-// class CategoryJournalStream {
-//   static final CategoryJournalStream _instance =
-//       CategoryJournalStream._internal();
-
-//   factory CategoryJournalStream() => _instance;
-
-//   CategoryJournalStream._internal();
-
-//   final StreamController<List<Map<String, dynamic>>>
-//       _categoryjournalController =
-//       StreamController<List<Map<String, dynamic>>>.broadcast();
-
-//   Stream<List<Map<String, dynamic>>> get categoryjournalStream =>
-//       _categoryjournalController.stream;
-
-//   void updateJournalData(List<Map<String, dynamic>> newData) async {
-//     _categoryjournalController.sink.add(newData);
-//   }
-
-//   void dispose() {
-//     _categoryjournalController.close();
-//   }
-// }
-
 class CashWalletHeadJournalStream {
   static final CashWalletHeadJournalStream _instance =
       CashWalletHeadJournalStream._internal();
