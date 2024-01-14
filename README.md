@@ -1,10 +1,11 @@
 # coinkeeper
 
-A new Flutter project.
+Android App to keep track of your expenses made with Flutter
 
-## Getting Started
-### Requirements
-- minimum Android SDK version required 19
+## Screenshots:
+| Home  | Wallet  | Report 1  | Report 2  | Settings  | Wallet transaction  |
+|---|---|---|---|---|---|
+|  ![](./screenshots/home_screen.png) |  ![](./screenshots/wallets_screen.png) |  ![](./screenshots/report_screen_1.png) |  ![](./screenshots/report_screen_2.png) |  ![](./screenshots/settings_screen.png) |  ![](./screenshots/cash_transaction_screen.png) |
 
 ## Dependencies
 - flutter pub add intl
